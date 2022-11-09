@@ -1,6 +1,7 @@
 export default {
-    buildModules: [
-        '@nuxt/typescript-build',
-        '@nuxtjs/vuetify',
-    ]
-}
+  buildModules: [
+    "@nuxt/typescript-build",
+    "nuxt-typed-vuex",
+    "@nuxtjs/vuetify",
+  ],
+};
