@@ -5,7 +5,7 @@
     </v-row>
     <div v-for="(subTask, index) in subTasks">
       <v-row align="center">
-        <v-text>{{ index + 1 }}.</v-text>
+        <span>{{ index + 1 }}.</span>
         <v-col cols="4">
           <v-text-field
             v-model="subTask.name"
@@ -21,9 +21,9 @@
             ></v-range-slider>
           </v-row>
           <v-row>
-            <v-text
+            <span
               >from {{ subTask.range[0] }} to {{ subTask.range[1] }}
-              {{ subTask.unit }}</v-text
+              {{ subTask.unit }}</span
             >
           </v-row>
         </v-col>

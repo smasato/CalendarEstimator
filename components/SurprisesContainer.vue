@@ -8,7 +8,7 @@
     <div v-for="(suprise, index) in suprises">
       <v-container>
         <v-row align="center">
-          <v-text>{{ index + 1 }}.</v-text>
+          <span>{{ index + 1 }}.</span>
           <v-col cols="3">
             <v-text-field
               v-model="suprise.name"
@@ -24,10 +24,10 @@
               ></v-range-slider>
             </v-row>
             <v-row>
-              <v-text
-                >from {{ suprise.range[0] }} to {{ suprise.range[1] }}
-                {{ suprise.unit }}</v-text
-              >
+              <span>
+                from {{ suprise.range[0] }} to {{ suprise.range[1] }}
+                {{ suprise.unit }}
+              </span>
             </v-row>
           </v-col>
 
@@ -55,7 +55,7 @@
           </v-col>
         </v-row>
         <v-row align="center">
-          it happens
+          <span>it happens</span>
           <v-col cols="auto">
             <v-text-field
               type="number"
@@ -65,7 +65,7 @@
             ></v-text-field>
           </v-col>
           <v-col cols="auto">
-            <v-text>time(s) out of</v-text>
+            <p>time(s) out of</p>
           </v-col>
 
           <v-col cols="auto">
