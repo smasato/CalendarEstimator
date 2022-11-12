@@ -16,6 +16,7 @@ export type Unit = "minute(s)" | "hour(s)" | "day(s)";
 export type EventType = "slower" | "faster";
 
 export type Task = {
+  name: string;
   subTasks: Array<SubTask>;
   surprises: Array<Surprise>;
 };
