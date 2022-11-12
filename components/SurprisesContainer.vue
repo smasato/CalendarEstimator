@@ -82,8 +82,9 @@
   </v-container>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from "vue";
+export default Vue.extend({
   data() {
     return {
       suprises: [
@@ -95,8 +96,8 @@ export default {
           probability: [0, 1],
         },
       ],
-      units: ["minute(s)", "hour(s)", "day(s)"],
-      eventTypes: ["slower", "faster"],
+      units: [],
+      eventTypes: [],
     };
   },
   methods: {
@@ -115,5 +116,11 @@ export default {
       }
     },
   },
-};
+  mounted() {
+    // @ts-ignore
+    const constants = this.$constants;
+    this.units = constants.units;
+    this.eventTypes = constants.eventTypes;
+  },
+});
 </script>

@@ -1,6 +1,6 @@
 export default {
   css: [],
-  plugins: [],
+  plugins: ["~/plugins/constants.ts"],
   build: {
     transpile: [/typed-vuex/],
     postcss: {

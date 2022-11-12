@@ -43,8 +43,9 @@
   </v-container>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from "vue";
+export default Vue.extend({
   data() {
     return {
       subTasks: [
@@ -54,7 +55,7 @@ export default {
           unit: "minute(s)",
         },
       ],
-      units: ["minute(s)", "hour(s)", "day(s)"],
+      units: [],
     };
   },
   methods: {
@@ -71,5 +72,9 @@ export default {
       }
     },
   },
-};
+  mounted() {
+    // @ts-ignore
+    this.units = this.$constants.units;
+  },
+});
 </script>
