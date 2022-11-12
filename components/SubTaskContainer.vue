@@ -45,28 +45,29 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { SubTask } from "~/types";
+
 export default Vue.extend({
+  props: {
+    subTasks: {
+      type: Array as () => SubTask[],
+      required: true,
+    },
+  },
   data() {
     return {
-      subTasks: [
-        {
-          name: "",
-          range: [0, 10],
-          unit: "minute(s)",
-        },
-      ],
       units: [],
     };
   },
   methods: {
-    insertSubTask(index) {
+    insertSubTask(index: number) {
       this.subTasks.splice(index + 1, 0, {
         name: "",
         range: [0, 10],
         unit: "minute(s)",
       });
     },
-    removeSubTask(index) {
+    removeSubTask(index: number) {
       if (this.subTasks.length > 1) {
         this.subTasks.splice(index, 1);
       }

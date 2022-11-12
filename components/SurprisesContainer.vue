@@ -84,33 +84,32 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { Surprise } from "~/types";
+
 export default Vue.extend({
+  props: {
+    suprises: {
+      type: Array as () => Surprise[],
+      required: true,
+    },
+  },
   data() {
     return {
-      suprises: [
-        {
-          name: "",
-          range: [0, 10],
-          unit: "minute(s)",
-          eventType: "slower",
-          probability: [0, 1],
-        },
-      ],
       units: [],
       eventTypes: [],
     };
   },
   methods: {
-    insertSuprise(index) {
+    insertSuprise(index: number) {
       this.suprises.splice(index + 1, 0, {
         name: "",
         range: [0, 10],
         unit: "minute(s)",
         eventType: "slower",
         probability: [0, 1],
-      });
+      } as Surprise);
     },
-    removesuprise(index) {
+    removesuprise(index: number) {
       if (this.suprises.length > 1) {
         this.suprises.splice(index, 1);
       }
