@@ -9,12 +9,13 @@
     "sourceMap": true,
     "strict": true,
     "noEmit": true,
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
       "~/*": ["./*"],
       "@/*": ["./*"]
     },
-    "types": ["@types/node", "@nuxt/types"]
+    "types": ["@types/node", "@nuxt/types"],
+    "typeRoots": ["types", "./node_modules/@types"]
   },
   "exclude": ["node_modules"],
   "vueCompilerOptions": {

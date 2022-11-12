@@ -2,6 +2,7 @@ export default {
   css: [],
   plugins: [],
   build: {
+    transpile: [/typed-vuex/],
     postcss: {
       syntax: "postcss-scss",
       plugins: {
