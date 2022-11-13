@@ -4,10 +4,7 @@
 
     <v-main>
       <v-container fluid>
-        <EstimateForm
-          v-bind:isOpen="dialog"
-          v-on:update:isOpen="dialog = $event"
-        />
+        <EstimateForm v-model="dialog" v-on:close-dialog="dialog = false" />
         <v-row class="fill-height">
           <v-col cols="3">
             <div class="text-center" @click="dialog = true">

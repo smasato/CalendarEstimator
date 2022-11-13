@@ -1,24 +1,43 @@
 <template>
-  <v-dialog v-model="isOpen" max-width="70%">
+  <v-dialog v-model="value" max-width="70%" v-on:click:outside="onClickOutside">
     <v-card>
-      <v-text-field v-model="task.name" label="Name (Optional)"></v-text-field>
-      <SubTaskContainer v-bind:subTasks="task.subTasks" />
-      <SurprisesContainer v-bind:suprises="task.surprises" />
-      <v-btn @click="addTask">Create Task</v-btn>
+      <v-container>
+        <v-row>
+          <v-col>
+            <v-btn @click="setExample1">Example 1</v-btn>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-text-field
+              hide-details
+              v-model="task.name"
+              label="Name (Optional)"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <SubTaskContainer v-bind:subTasks="task.subTasks" />
+        </v-row>
+        <v-row>
+          <SurprisesContainer v-bind:suprises="task.surprises" />
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-btn @click="addTask">Create Task</v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-card>
   </v-dialog>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import { Task, SubTask, Surprise } from "~/types";
 
-export default Vue.extend({
+export default {
   props: {
-    isOpen: {
-      type: Boolean,
-      required: true,
-    },
+    value: Boolean,
   },
   data() {
     return {
@@ -46,8 +65,14 @@ export default Vue.extend({
   methods: {
     addTask() {
       this.$accessor.task.addTask(this.task);
-      this.$emit("update:isOpen", false);
+    },
+    setExample1() {
+      // @ts-ignore
+      this.task = this.$constants.example1;
+    },
+    onClickOutside() {
+      this.$emit("close-dialog");
     },
   },
-});
+};
 </script>
