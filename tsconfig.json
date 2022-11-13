@@ -1,15 +1,17 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "ESNext",
+    "baseUrl": "./",
+    "rootDir": ".",
+    "outDir": "./dist",
+    "strict": true,
+    "sourceMap": true,
+    "target": "ESNext",
+    "allowJs": true,
+    "module": "CommonJS",
     "moduleResolution": "Node",
     "lib": ["ESNext", "ESNext.AsyncIterable", "DOM"],
     "esModuleInterop": true,
-    "allowJs": true,
-    "sourceMap": true,
-    "strict": true,
     "noEmit": true,
-    "baseUrl": "./",
     "paths": {
       "~/*": ["./*"],
       "@/*": ["./*"]

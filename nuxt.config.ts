@@ -3,6 +3,9 @@ export default {
   router: {
     base: "/CalendarEstimator/",
   },
+  head: {
+    titleTemplate: "CalendarEstimator - %s",
+  },
   css: [],
   plugins: ["~/plugins/constants.ts"],
   build: {
