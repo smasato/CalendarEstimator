@@ -1,14 +1,13 @@
 <template>
   <v-app>
-    <v-app-bar app>
-      <v-toolbar-title>Calendar Estimator</v-toolbar-title>
-    </v-app-bar>
+    <Header />
 
     <v-main>
       <v-container fluid>
-        <v-dialog v-model="dialog" max-width="70%">
-          <EstimateForm />
-        </v-dialog>
+        <EstimateForm
+          v-bind:isOpen="dialog"
+          v-on:update:isOpen="dialog = $event"
+        />
         <v-row class="fill-height">
           <v-col cols="3">
             <div class="text-center" @click="dialog = true">
@@ -55,7 +54,7 @@
       </v-container>
     </v-main>
 
-    <v-footer app> </v-footer>
+    <Footer />
   </v-app>
 </template>
 
