@@ -1,0 +1,7 @@
+# CalendarEstimator
+
+## Setup
+
+```
+npm install
+```
