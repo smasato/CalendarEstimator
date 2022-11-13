@@ -1,4 +1,8 @@
 export default {
+  target: "static",
+  router: {
+    base: "/CalendarEstimator/",
+  },
   css: [],
   plugins: ["~/plugins/constants.ts"],
   build: {
