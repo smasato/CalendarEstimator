@@ -6,6 +6,9 @@
           <v-col>
             <v-btn @click="setExample1">Example 1</v-btn>
           </v-col>
+          <v-col>
+            <v-btn @click="resetTask">Try if yourself</v-btn>
+          </v-col>
         </v-row>
         <v-row>
           <v-col>
@@ -65,6 +68,29 @@ export default {
   methods: {
     addTask() {
       this.$accessor.task.addTask(this.task);
+      this.resetTask();
+      this.$emit("close-dialog");
+    },
+    resetTask() {
+      this.task = {
+        name: "",
+        subTasks: [
+          {
+            name: "",
+            range: [0, 10],
+            unit: "minute(s)",
+          },
+        ] as SubTask[],
+        surprises: [
+          {
+            name: "",
+            range: [0, 10],
+            unit: "minute(s)",
+            eventType: "slower",
+            probability: [0, 1],
+          },
+        ] as Surprise[],
+      } as Task;
     },
     setExample1() {
       // @ts-ignore
