@@ -1,4 +1,6 @@
-export default {
+import { NuxtConfig } from "@nuxt/types";
+
+const config: NuxtConfig = {
   target: "static",
   router: {
     base: "/CalendarEstimator/",
@@ -11,9 +13,8 @@ export default {
   build: {
     transpile: [/typed-vuex/],
     postcss: {
-      syntax: "postcss-scss",
       plugins: {
-        autoprefixer: require("autoprefixer"),
+        autoprefixer: {},
       },
     },
   },
@@ -33,3 +34,5 @@ export default {
     types: ["@nuxt/types"],
   },
 };
+
+export default config;
