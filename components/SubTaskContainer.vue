@@ -1,45 +1,70 @@
 <template>
   <v-container>
     <v-row>
-      <div class="text-h5">1. Break the task down into steps</div>
+      <v-col>
+        <div class="text-h5">1. Break the task down into steps</div>
+      </v-col>
     </v-row>
-    <div v-for="(subTask, index) in subTasks">
-      <v-row align="center">
+    <v-row
+      align="baseline"
+      v-for="(subTask, index) in subTasks"
+      v-bind:key="index"
+    >
+      <v-col cols="auto">
         <span>{{ index + 1 }}.</span>
-        <v-col cols="4">
-          <v-text-field
-            v-model="subTask.name"
-            label="Name (Optional)"
-          ></v-text-field>
-        </v-col>
-
-        <v-col cols="4">
-          <v-row>
-            <v-range-slider
+      </v-col>
+      <v-col cols="4">
+        <v-text-field
+          v-model="subTask.name"
+          label="Name (Optional)"
+          hide-details
+        ></v-text-field>
+      </v-col>
+      <v-col cols="6">
+        <v-row align="baseline">
+          <v-col cols="auto">
+            <span class="mr-1">from</span>
+          </v-col>
+          <v-col cols="2">
+            <v-text-field
+              class="mr-1"
+              max="200"
+              v-model="subTask.range[0]"
+              type="number"
               hide-details
-              v-model="subTask.range"
-            ></v-range-slider>
-          </v-row>
-          <v-row>
-            <span
-              >from {{ subTask.range[0] }} to {{ subTask.range[1] }}
-              {{ subTask.unit }}</span
-            >
-          </v-row>
-        </v-col>
+            ></v-text-field>
+          </v-col>
+          <v-col cols="auto">
+            <span class="mr-1">to</span>
+          </v-col>
+          <v-col cols="2">
+            <v-text-field
+              min="1"
+              max="200"
+              v-model="subTask.range[1]"
+              type="number"
+              hide-details
+            ></v-text-field>
+          </v-col>
+          <v-col cols="3">
+            <v-select
+              hide-details
+              v-model="subTask.unit"
+              :items="units"
+            ></v-select>
+          </v-col>
+        </v-row>
+      </v-col>
 
-        <v-col cols="2">
-          <v-select v-model="subTask.unit" :items="units"></v-select>
-        </v-col>
+      <v-spacer></v-spacer>
 
-        <v-col cols="1">
-          <v-row>
-            <v-btn x-small @click="insertSubTask(index)">+</v-btn>
-            <v-btn x-small @click="removeSubTask(index)">X</v-btn>
-          </v-row>
-        </v-col>
-      </v-row>
-    </div>
+      <v-col cols="1">
+        <v-row>
+          <v-btn x-small @click="insertSubTask(index)">+</v-btn>
+          <v-btn x-small @click="removeSubTask(index)">X</v-btn>
+        </v-row>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
