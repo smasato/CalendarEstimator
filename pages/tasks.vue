@@ -20,6 +20,8 @@
             >
           </v-row>
         </div>
+        <p>{{ zScoreJStat() }}</p>
+        <p>{{ zScorStdlib() }}</p>
       </v-container>
     </v-main>
 
@@ -30,6 +32,8 @@
 <script lang="ts">
 import Vue from "vue";
 import { Task } from "~/types";
+import { erfcinv } from "@stdlib/math/base/special";
+import { jStat } from "jstat";
 
 export default Vue.extend({
   data() {
@@ -39,6 +43,16 @@ export default Vue.extend({
   },
   mounted() {
     this.tasks = this.$accessor.task.tasks;
+  },
+  methods: {
+    zScoreJStat() {
+      const conf_level = 0.95;
+      return jStat.normal.inv(0.5 + conf_level / 2, 0, 1);
+    },
+    zScorStdlib() {
+      const conf_level = 0.95;
+      return -1.41421356237309505 * 1 * erfcinv(2 * (0.5 + conf_level / 2)) + 0;
+    },
   },
 });
 </script>
