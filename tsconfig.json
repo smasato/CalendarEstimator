@@ -17,7 +17,11 @@
       "@/*": ["./*"]
     },
     "types": ["@types/node", "@nuxt/types"],
-    "typeRoots": ["types", "./node_modules/@types"]
+    "typeRoots": [
+      "types",
+      "./node_modules/@types",
+      "./node_modules/@stdlib/types"
+    ]
   },
   "exclude": ["node_modules"],
   "vueCompilerOptions": {
