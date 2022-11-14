@@ -37,8 +37,9 @@
 
 <script lang="ts">
 import { Task, SubTask, Surprise } from "~/types";
+import Vue from "vue";
 
-export default {
+export default Vue.extend({
   props: {
     value: Boolean,
   },
@@ -100,5 +101,5 @@ export default {
       this.$emit("close-dialog");
     },
   },
-};
+});
 </script>
