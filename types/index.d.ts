@@ -15,7 +15,15 @@ declare module "@nuxt/types" {
 export type Unit = "minute(s)" | "hour(s)" | "day(s)";
 export type EventType = "slower" | "faster";
 
-export type Task = {
+export type Event = {
+  name: string;
+  start: Date;
+  end: Date;
+  color?: string;
+  timed: boolean;
+};
+
+export type Task = Event & {
   name: string;
   subTasks: Array<SubTask>;
   surprises: Array<Surprise>;

@@ -30,6 +30,7 @@
                   <v-icon small>mdi-chevron-right</v-icon>
                 </v-btn>
                 <v-toolbar-title v-if="$refs.calendar">{{
+                  // @ts-ignore
                   $refs.calendar.title
                 }}</v-toolbar-title>
                 <v-spacer></v-spacer>
@@ -55,12 +56,15 @@
   </v-app>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from "vue";
+import { Event } from "~/types";
+
+export default Vue.extend({
   data: () => ({
     dialog: false,
     focus: "",
-    events: [],
+    events: [] as Event[],
     colors: [
       "blue",
       "indigo",
@@ -81,22 +85,27 @@ export default {
       "Party",
     ],
   }),
+
   mounted() {
+    // @ts-ignore
     this.$refs.calendar.checkChange();
   },
   methods: {
-    getEventColor(event) {
+    getEventColor(event: Event) {
       return event.color;
     },
     setToday() {
       this.focus = "";
     },
     prev() {
+      // @ts-ignore
       this.$refs.calendar.prev();
     },
     next() {
+      // @ts-ignore
       this.$refs.calendar.next();
     },
+    // @ts-ignore
     fetchEvents({ start, end }) {
       const events = [];
       const min = new Date(`${start.date}T00:00:00`);
@@ -118,9 +127,9 @@ export default {
       }
       this.events = events;
     },
-    rnd(a, b) {
+    rnd(a: number, b: number) {
       return Math.floor((b - a + 1) * Math.random()) + a;
     },
   },
-};
+});
 </script>
