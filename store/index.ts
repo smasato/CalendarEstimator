@@ -1,6 +1,7 @@
 import { getAccessorType } from "typed-vuex";
 
 import * as task from "@/store/task";
+import * as event from "@/store/event";
 
 export const state = () => ({});
 export const getters = {};
@@ -14,5 +15,6 @@ export const accessorType = getAccessorType({
   actions,
   modules: {
     task,
+    event,
   },
 });
