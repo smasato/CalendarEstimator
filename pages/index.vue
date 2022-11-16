@@ -4,14 +4,33 @@
 
     <v-main>
       <v-container fluid>
-        <EstimateForm v-model="dialog" v-on:close-dialog="dialog = false" />
+        <EstimateForm
+          v-model="estimateForm"
+          v-on:close-dialog="estimateForm = false"
+        />
+        <EventForm
+          v-model="eventForm"
+          v-on:close-event-form="eventForm = false"
+        />
         <v-row class="fill-height">
           <v-col cols="3">
-            <div class="text-center" @click="dialog = true">
-              <v-btn x-large rounded>
-                作成 <v-icon small>mdi-chevron-down</v-icon>
-              </v-btn>
-            </div>
+            <v-row>
+              <v-col align="center">
+                <v-btn-toggle v-model="mode">
+                  <v-btn value="normal"> Normal </v-btn>
+                  <v-btn value="estimate"> Estimate </v-btn>
+                </v-btn-toggle>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col align="center">
+                <div @click="clickCreate">
+                  <v-btn x-large rounded>
+                    作成 <v-icon small>mdi-chevron-down</v-icon>
+                  </v-btn>
+                </div>
+              </v-col>
+            </v-row>
           </v-col>
           <v-col>
             <v-sheet height="64">
@@ -62,7 +81,9 @@ import { Event } from "~/types";
 
 export default Vue.extend({
   data: () => ({
-    dialog: false,
+    estimateForm: false,
+    eventForm: false,
+    mode: "normal",
     focus: "",
     events: [] as Event[],
     colors: [
@@ -91,6 +112,13 @@ export default Vue.extend({
     this.$refs.calendar.checkChange();
   },
   methods: {
+    clickCreate() {
+      if (this.mode === "normal") {
+        this.eventForm = true;
+      } else {
+        this.estimateForm = true;
+      }
+    },
     getEventColor(event: Event) {
       return event.color;
     },
