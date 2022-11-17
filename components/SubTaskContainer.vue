@@ -28,7 +28,8 @@
           <v-col cols="2">
             <v-text-field
               class="mr-1"
-              max="200"
+              min="0"
+              :max="subTask.range[1]"
               v-model="subTask.range[0]"
               type="number"
               hide-details
@@ -39,10 +40,11 @@
           </v-col>
           <v-col cols="2">
             <v-text-field
-              min="1"
+              min="0"
               max="200"
               v-model="subTask.range[1]"
               type="number"
+              v-on:input="updatedRangeUpper(index, $event)"
               hide-details
             ></v-text-field>
           </v-col>
@@ -95,6 +97,12 @@ export default Vue.extend({
     removeSubTask(index: number) {
       if (this.subTasks.length > 1) {
         this.subTasks.splice(index, 1);
+      }
+    },
+    updatedRangeUpper(index: number, event: any) {
+      const temp = Number(event);
+      if (this.subTasks[index].range[0] > temp) {
+        this.subTasks[index].range[0] = temp;
       }
     },
   },

@@ -30,7 +30,8 @@
               <v-col cols="3" class="flex-shrink-0 flex-grow-1">
                 <v-text-field
                   dense
-                  max="200"
+                  min="0"
+                  :max="suprise.range[1]"
                   v-model="suprise.range[0]"
                   type="number"
                   hide-details
@@ -42,10 +43,11 @@
               <v-col cols="3" class="flex-shrink-0 flex-grow-1">
                 <v-text-field
                   dense
-                  min="1"
+                  min="0"
                   max="200"
                   v-model="suprise.range[1]"
                   type="number"
+                  v-on:input="updatedRangeUpper(index, $event)"
                   hide-details
                 ></v-text-field>
               </v-col>
@@ -137,6 +139,12 @@ export default Vue.extend({
     removesuprise(index: number) {
       if (this.suprises.length > 1) {
         this.suprises.splice(index, 1);
+      }
+    },
+    updatedRangeUpper(index: number, event: any) {
+      const temp = Number(event);
+      if (this.suprises[index].range[0] > temp) {
+        this.suprises[index].range[0] = temp;
       }
     },
   },
