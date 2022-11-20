@@ -14,9 +14,10 @@
     "noEmit": true,
     "paths": {
       "~/*": ["./*"],
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "plotly.js": ["node_modules/@types/plotly.js"]
     },
-    "types": ["@types/node", "@nuxt/types"],
+    "types": ["@types/node", "@nuxt/types", "plotly.js"],
     "typeRoots": [
       "types",
       "./node_modules/@types",

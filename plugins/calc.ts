@@ -1,6 +1,8 @@
 import { Plugin } from "@nuxt/types";
 import { jStat } from "jstat";
-import { SubTask, Surprise } from "~/types";
+import { erfcinv } from "@stdlib/math/base/special";
+import { SubTask, Surprise, Task, Unit, MinutesRange } from "~/types";
+import seedrandom from "seedrandom";
 
 /*
     TimeEstimator
@@ -20,8 +22,20 @@ import { SubTask, Surprise } from "~/types";
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const conf_level = 0.95;
-const z_score = jStat.normal.inv(0.5 + conf_level / 2, 0, 1);
+jStat.setRandom(seedrandom("time"));
+
+const z_score = zScoreJStat();
+const num_samples = 10000;
+
+function zScoreJStat() {
+  const conf_level = 0.95;
+  return jStat.normal.inv(0.5 + conf_level / 2, 0, 1);
+}
+
+function zScorStdlib() {
+  const conf_level = 0.95;
+  return -1.41421356237309505 * 1 * erfcinv(2 * (0.5 + conf_level / 2)) + 0;
+}
 
 function getMean(low: number, up: number) {
   return Math.exp((Math.log(low) + Math.log(up)) / 2.0);
@@ -35,60 +49,92 @@ function sumUp(total: number, num: number) {
   return total + num;
 }
 
-function getTaskSample(subTasks: SubTask[]) {
-  let summed = 0;
+function getTaskSample(subTasks: Array<SubTask>) {
+  let sumMed = 0;
   subTasks.forEach(function (subTask) {
-    summed += getSample(subTask.range);
+    const minuteRange = toMinutes(subTask.range, subTask.unit);
+    sumMed += getSample(minuteRange);
   });
-  return summed;
+  return sumMed;
 }
 
 function getSurpriseSample(surprises: Surprise[]) {
-  let summed = 0;
+  let sumMed = 0;
   surprises.forEach(function (surprise) {
     if (
       jStat.uniform.sample(0, 1) <=
       surprise.probability[0] / surprise.probability[1]
     ) {
-      const value = getSample(surprise.range);
-      if (surprise.eventType == "slower") summed += value;
-      else summed -= value;
+      const minuteRange = toMinutes(surprise.range, surprise.unit);
+      const value = getSample(minuteRange);
+      if (surprise.eventType == "slower") sumMed += value;
+      else sumMed -= value;
     }
   });
-  return summed;
+  return sumMed;
 }
 
-function getSample(range: [number, number]) {
-  const low = pos(range[0]);
-  const up = pos(range[1]);
+function getSample(range: MinutesRange) {
+  const low = pos(range.low);
+  const up = pos(range.up);
   return jStat.lognormal.sample(
     Math.log(getMean(low, up)),
     Math.log(getSD(low, up))
   );
 }
 
-// TODO
-function getDelay(data: any, longer = true) {
-  let delay = 0;
-  let l = data["likelihood"].length; // TODO
-  if (!longer) {
-    l -= 1;
-  }
-  for (let i = 0; i < l; i++) {
-    const happens = jStat.uniform.sample(0, 1) <= data["likelihood"][i];
-    if (happens) {
-      delay += getSample([pos(data["lower"][i]), pos(data["upper"][i])]);
-    }
-  }
-  return delay;
-}
-
-function pos(v: number) {
+function pos(v: number): number {
   return Math.max(0.1, v);
 }
 
-const calc: Plugin = ({ app }, inject): void => {
-  inject("calc", {}); // TODO
+function toMinutes(range: [number, number], unit: Unit): MinutesRange {
+  switch (unit) {
+    case "minute(s)":
+      return { low: range[0], up: range[1] } as MinutesRange;
+    case "hour(s)":
+      return { low: range[0] * 60, up: range[1] * 60 } as MinutesRange;
+    case "day(s)":
+      return {
+        low: range[0] * 60 * 24,
+        up: range[1] * 60 * 24,
+      } as MinutesRange;
+  }
+}
+
+function calc(subTasks: Array<SubTask>, surprises: Surprise[]) {
+  var maxVal = 0;
+  var samples = [];
+
+  for (var i = num_samples - 1; i >= 0; i--) {
+    var newSample = Math.max(
+      getTaskSample(subTasks) + getSurpriseSample(surprises),
+      0
+    );
+    samples.push(newSample);
+    maxVal = maxVal < newSample ? newSample : maxVal;
+  }
+  return {
+    mean: samples.reduce(sumUp) / num_samples,
+    median: jStat.median(samples),
+    max: maxVal,
+    min: jStat.min(samples),
+    sd: jStat.stdev(samples),
+    samples: samples.sort(),
+  };
+}
+
+export interface CalcPluginInterface {
+  calc: (task: Task) => any;
+}
+
+class CalcPlugin implements CalcPluginInterface {
+  calc(task: Task) {
+    return calc(task.subTasks, task.surprises);
+  }
+}
+
+const calcPlugin: Plugin = ({ app }, inject): void => {
+  inject("calc", new CalcPlugin());
 };
 
-export default calc;
+export default calcPlugin;
