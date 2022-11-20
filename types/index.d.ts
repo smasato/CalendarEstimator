@@ -15,6 +15,11 @@ declare module "@nuxt/types" {
 export type Unit = "minute(s)" | "hour(s)" | "day(s)";
 export type EventType = "slower" | "faster";
 
+export type MinutesRange = {
+  low: number;
+  up: number;
+};
+
 export type Event = {
   name: string;
   start: Date;

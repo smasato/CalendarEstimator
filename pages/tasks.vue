@@ -20,8 +20,7 @@
             >
           </v-row>
         </div>
-        <p>{{ zScoreJStat() }}</p>
-        <p>{{ zScorStdlib() }}</p>
+        <div ref="graph"></div>
       </v-container>
     </v-main>
 
@@ -32,8 +31,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Task } from "~/types";
-import { erfcinv } from "@stdlib/math/base/special";
-import { jStat } from "jstat";
+import Plotly from "plotly.js";
 
 export default Vue.extend({
   data() {
@@ -43,15 +41,38 @@ export default Vue.extend({
   },
   mounted() {
     this.tasks = this.$accessor.task.tasks;
+    this.plotHtml();
   },
   methods: {
-    zScoreJStat() {
-      const conf_level = 0.95;
-      return jStat.normal.inv(0.5 + conf_level / 2, 0, 1);
+    calc(task: Task) {
+      return this.$calc.calc(task);
     },
-    zScorStdlib() {
-      const conf_level = 0.95;
-      return -1.41421356237309505 * 1 * erfcinv(2 * (0.5 + conf_level / 2)) + 0;
+    plotHtml() {
+      if (this.tasks.length === 0) {
+        return "";
+      }
+
+      this.tasks.forEach((task, index) => {
+        let data: Plotly.Data[] = [];
+        data.push({
+          x: this.$calc.calc(task).samples,
+          type: "histogram",
+        });
+        const layout = {
+          title: task.name,
+          xaxis: {
+            title: "時間",
+          },
+          yaxis: {
+            title: "回数",
+          },
+        };
+
+        if (this.$refs.graph) {
+          let el = this.$refs.graph as HTMLElement;
+          Plotly.newPlot(el as Plotly.Root, data, layout);
+        }
+      });
     },
   },
 });
