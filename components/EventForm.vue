@@ -79,6 +79,7 @@ export default Vue.extend({
       };
     },
     onClickOutside() {
+      this.resetEvent();
       this.$emit("close-event-form");
     },
   },

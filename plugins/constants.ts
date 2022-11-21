@@ -79,7 +79,28 @@ const example1 = {
   ],
 } as Task;
 
-const constants: Plugin = ({ app }, inject): void => {
-  inject("constants", { units, eventTypes, example1 });
+export interface ConstantsPluginInterface {
+  units: () => string[];
+  eventTypes: () => string[];
+  example1: () => Task;
+}
+
+class ConstantsPlugin implements ConstantsPluginInterface {
+  units(): string[] {
+    return units;
+  }
+
+  eventTypes(): string[] {
+    return eventTypes;
+  }
+
+  example1(): Task {
+    return example1;
+  }
+}
+
+const constantsPlugin: Plugin = (context, inject) => {
+  inject("constants", new ConstantsPlugin());
 };
-export default constants;
+
+export default constantsPlugin;

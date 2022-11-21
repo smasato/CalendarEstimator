@@ -83,7 +83,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      units: [],
+      units: [] as string[],
     };
   },
   methods: {
@@ -107,8 +107,7 @@ export default Vue.extend({
     },
   },
   mounted() {
-    // @ts-ignore
-    this.units = this.$constants.units;
+    this.units = this.$constants.units();
   },
 });
 </script>
