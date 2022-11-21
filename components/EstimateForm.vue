@@ -94,10 +94,11 @@ export default Vue.extend({
       } as Task;
     },
     setExample1() {
-      // @ts-ignore
-      this.task = this.$constants.example1;
+      let task = Object.create(this.$constants.example1());
+      this.task = task;
     },
     onClickOutside() {
+      this.resetTask();
       this.$emit("close-dialog");
     },
   },

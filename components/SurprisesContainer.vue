@@ -122,8 +122,8 @@ export default Vue.extend({
   },
   data() {
     return {
-      units: [],
-      eventTypes: [],
+      units: [] as string[],
+      eventTypes: [] as string[],
     };
   },
   methods: {
@@ -149,10 +149,8 @@ export default Vue.extend({
     },
   },
   mounted() {
-    // @ts-ignore
-    const constants = this.$constants;
-    this.units = constants.units;
-    this.eventTypes = constants.eventTypes;
+    this.units = this.$constants.units();
+    this.eventTypes = this.$constants.eventTypes();
   },
 });
 </script>
