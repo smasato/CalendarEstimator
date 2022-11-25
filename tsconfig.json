@@ -12,12 +12,13 @@
     "lib": ["ESNext", "ESNext.AsyncIterable", "DOM"],
     "esModuleInterop": true,
     "noEmit": true,
+    "noImplicitAny": false,
     "paths": {
       "~/*": ["./*"],
       "@/*": ["./*"],
       "plotly.js": ["node_modules/@types/plotly.js"]
     },
-    "types": ["@types/node", "@nuxt/types", "plotly.js"],
+    "types": ["@types/node", "@nuxt/types", "plotly.js", "vuetify"],
     "typeRoots": [
       "types",
       "./node_modules/@types",

@@ -11,6 +11,7 @@
         <EventForm
           v-model="eventForm"
           v-on:close-event-form="eventForm = false"
+          v-on:add-event="fetchEvents"
         />
         <v-row class="fill-height">
           <v-col cols="3">
@@ -55,16 +56,33 @@
                 <v-spacer></v-spacer>
               </v-toolbar>
             </v-sheet>
-            <v-sheet height="600">
+            <v-sheet>
               <v-calendar
                 ref="calendar"
-                v-model="focus"
+                v-model="value"
                 color="primary"
-                type="week"
+                type="4day"
                 :events="events"
                 :event-color="getEventColor"
+                :event-ripple="false"
                 @change="fetchEvents"
-              ></v-calendar>
+                @mousedown:event="startDrag"
+                @mousedown:time="startTime"
+                @mousemove:time="mouseMove"
+                @mouseup:time="endDrag"
+                @mouseleave.native="cancelDrag"
+              >
+                <template v-slot:event="{ event, timed, eventSummary }">
+                  <div class="v-event-draggable">
+                    <component :is="{ render: eventSummary }"></component>
+                  </div>
+                  <div
+                    v-if="timed"
+                    class="v-event-drag-bottom"
+                    @mousedown.stop="extendBottom(event)"
+                  ></div>
+                </template>
+              </v-calendar>
             </v-sheet>
           </v-col>
         </v-row>
@@ -75,36 +93,62 @@
   </v-app>
 </template>
 
+<style lang="scss">
+.v-event-draggable {
+  padding-left: 6px;
+}
+
+.v-event-timed {
+  user-select: none;
+}
+
+.v-event-drag-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4px;
+  height: 4px;
+  cursor: ns-resize;
+
+  &::after {
+    display: none;
+    position: absolute;
+    left: 50%;
+    height: 4px;
+    border-top: 1px solid white;
+    border-bottom: 1px solid white;
+    width: 16px;
+    margin-left: -8px;
+    opacity: 0.8;
+    content: "";
+  }
+
+  &:hover::after {
+    display: block;
+  }
+}
+</style>
+
 <script lang="ts">
 import Vue from "vue";
 import { Event } from "~/types";
+import dayjs from "dayjs";
 
 export default Vue.extend({
   data: () => ({
     estimateForm: false,
     eventForm: false,
     mode: "normal",
-    focus: "",
+    value: dayjs().format("YYYY-MM-DD"),
+    start: dayjs().format("YYYY-MM-DD"),
+    end: dayjs().add(3, "day").format("YYYY-MM-DD"),
     events: [] as Event[],
-    colors: [
-      "blue",
-      "indigo",
-      "deep-purple",
-      "cyan",
-      "green",
-      "orange",
-      "grey darken-1",
-    ],
-    names: [
-      "Meeting",
-      "Holiday",
-      "PTO",
-      "Travel",
-      "Event",
-      "Birthday",
-      "Conference",
-      "Party",
-    ],
+    dragEvent: null as any,
+    dragStart: null as any,
+    dragTime: null as any,
+    createEvent: null as any,
+    createStart: null as any,
+    extendOriginal: null as any,
   }),
 
   mounted() {
@@ -112,6 +156,101 @@ export default Vue.extend({
     this.$refs.calendar.checkChange();
   },
   methods: {
+    startDrag({ event, timed }) {
+      if (event && timed) {
+        this.dragEvent = event;
+        this.dragTime = null;
+        this.extendOriginal = null;
+      }
+    },
+    toTime(tms) {
+      return new Date(
+        tms.year,
+        tms.month - 1,
+        tms.day,
+        tms.hour,
+        tms.minute
+      ).getTime();
+    },
+    startTime(tms) {
+      const mouse = this.toTime(tms);
+
+      if (this.dragEvent && this.dragTime === null) {
+        const start = this.dragEvent.start;
+
+        this.dragTime = mouse - start;
+      }
+    },
+    extendBottom(event) {
+      this.createEvent = event;
+      this.createStart = event.start;
+      this.extendOriginal = event.end;
+    },
+    mouseMove(tms) {
+      const mouse = this.toTime(tms);
+
+      if (this.dragEvent && this.dragTime !== null) {
+        // イベントの移動
+        const start = this.dragEvent.start;
+        const end = this.dragEvent.end;
+        const duration = end - start;
+        const newStartTime = mouse - this.dragTime;
+        const newStart = new Date(this.roundTime(newStartTime));
+        const newEnd = new Date(newStart.getTime() + duration);
+
+        const newEvent = {
+          ...this.dragEvent,
+          start: newStart,
+          end: newEnd,
+        };
+        this.$accessor.event.updateEvent(newEvent);
+      } else if (this.createEvent && this.createStart !== null) {
+        // イベントの終了時刻を変更
+        const mouseRounded = this.roundTime(mouse, false);
+        const min = Math.min(mouseRounded, this.createStart);
+        const max = Math.max(mouseRounded, this.createStart);
+
+        const newEvent = {
+          ...this.createEvent,
+          start: min,
+          end: max,
+        };
+        this.$accessor.event.updateEvent(newEvent);
+      }
+    },
+    endDrag() {
+      this.dragTime = null;
+      this.dragEvent = null;
+      this.createEvent = null;
+      this.createStart = null;
+      this.extendOriginal = null;
+      this.fetchEvents({ start: this.start, end: this.end });
+    },
+    cancelDrag() {
+      if (this.createEvent) {
+        if (this.extendOriginal) {
+          this.createEvent.end = this.extendOriginal;
+        } else {
+          const i = this.events.indexOf(this.createEvent);
+          if (i !== -1) {
+            this.events.splice(i, 1);
+          }
+        }
+      }
+
+      this.createEvent = null;
+      this.createStart = null;
+      this.dragTime = null;
+      this.dragEvent = null;
+    },
+    roundTime(time, down = true) {
+      const roundTo = 15; // minutes
+      const roundDownTime = roundTo * 60 * 1000;
+
+      return down
+        ? time - (time % roundDownTime)
+        : time + (roundDownTime - (time % roundDownTime));
+    },
     clickCreate() {
       if (this.mode === "normal") {
         this.eventForm = true;
@@ -120,14 +259,10 @@ export default Vue.extend({
       }
     },
     getEventColor(event: Event) {
-      if (event.color === undefined) {
-        return this.colors[Math.floor(Math.random() * this.colors.length)];
-      } else {
-        return event.color;
-      }
+      return event.color;
     },
     setToday() {
-      this.focus = "";
+      this.value = dayjs().format("YYYY-MM-DD");
     },
     prev() {
       // @ts-ignore
@@ -138,8 +273,26 @@ export default Vue.extend({
       this.$refs.calendar.next();
     },
     // @ts-ignore
-    fetchEvents({ start, end }) {
-      const events = this.$accessor.event.events;
+    fetchEvents(to?: any) {
+      const events = [] as Event[];
+
+      if (to && to.start && to.end) {
+        this.start = to.start.date;
+        this.end = to.end.date;
+      }
+      const startDay = dayjs(this.start).startOf("day");
+      const endDay = dayjs(this.end).endOf("day");
+
+      this.$accessor.event.events.forEach((event) => {
+        const eventStart = dayjs(event.start);
+        const eventEnd = dayjs(event.end);
+        if (eventStart >= startDay && eventEnd <= endDay) {
+          const newEvent: Event = {
+            ...event,
+          };
+          events.push(newEvent);
+        }
+      });
       this.events = events;
     },
   },

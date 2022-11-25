@@ -21,10 +21,11 @@ export type MinutesRange = {
 };
 
 export type Event = {
+  id: number;
   name: string;
   start: Date;
   end: Date;
-  color?: string;
+  color: string;
   timed: boolean;
 };
 

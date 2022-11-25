@@ -17,6 +17,7 @@
     "@stdlib/types": "^0.0.14",
     "@types/plotly.js": "^2.12.8",
     "@types/seedrandom": "^3.0.2",
+    "dayjs": "^1.11.6",
     "jstat": "^1.9.5",
     "nuxt": "^2.13.3",
     "nuxt-typed-vuex": "^0.3.1",
