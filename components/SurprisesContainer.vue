@@ -149,8 +149,8 @@ export default Vue.extend({
     },
   },
   mounted() {
-    this.units = this.$constants.units();
-    this.eventTypes = this.$constants.eventTypes();
+    this.units = this.$constants.UNITS;
+    this.eventTypes = this.$constants.EVENT_TYPES;
   },
 });
 </script>

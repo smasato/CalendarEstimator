@@ -20,7 +20,6 @@
             >
           </v-row>
         </div>
-        <div ref="graph"></div>
       </v-container>
     </v-main>
 
@@ -31,7 +30,6 @@
 <script lang="ts">
 import Vue from "vue";
 import { Task } from "~/types";
-import Plotly from "plotly.js";
 
 export default Vue.extend({
   data() {
@@ -41,39 +39,7 @@ export default Vue.extend({
   },
   mounted() {
     this.tasks = this.$accessor.task.tasks;
-    this.plotHtml();
   },
-  methods: {
-    calc(task: Task) {
-      return this.$calc.calc(task);
-    },
-    plotHtml() {
-      if (this.tasks.length === 0) {
-        return "";
-      }
-
-      this.tasks.forEach((task, index) => {
-        let data: Plotly.Data[] = [];
-        data.push({
-          x: this.$calc.calc(task).samples,
-          type: "histogram",
-        });
-        const layout = {
-          title: task.name,
-          xaxis: {
-            title: "時間",
-          },
-          yaxis: {
-            title: "回数",
-          },
-        };
-
-        if (this.$refs.graph) {
-          let el = this.$refs.graph as HTMLElement;
-          Plotly.newPlot(el as Plotly.Root, data, layout);
-        }
-      });
-    },
-  },
+  methods: {},
 });
 </script>
