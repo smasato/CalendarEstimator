@@ -1,10 +1,10 @@
 import { Plugin } from "@nuxt/types";
 import { Task } from "~/types";
 
-const units = ["minute(s)", "hour(s)", "day(s)"];
-const eventTypes = ["slower", "faster"];
+const UNITS = ["minute(s)", "hour(s)", "day(s)"];
+const EVENT_TYPES = ["slower", "faster"];
 
-const example1 = {
+const EXAMPLE_1 = {
   name: "Example 1",
   subTasks: [
     {
@@ -80,23 +80,15 @@ const example1 = {
 } as Task;
 
 export interface ConstantsPluginInterface {
-  units: () => string[];
-  eventTypes: () => string[];
-  example1: () => Task;
+  readonly UNITS: Array<string>;
+  readonly EVENT_TYPES: Array<string>;
+  readonly EXAMPLE_1: Task;
 }
 
 class ConstantsPlugin implements ConstantsPluginInterface {
-  units(): string[] {
-    return units;
-  }
-
-  eventTypes(): string[] {
-    return eventTypes;
-  }
-
-  example1(): Task {
-    return example1;
-  }
+  readonly UNITS = UNITS;
+  readonly EVENT_TYPES = EVENT_TYPES;
+  readonly EXAMPLE_1 = EXAMPLE_1;
 }
 
 const constantsPlugin: Plugin = (context, inject) => {

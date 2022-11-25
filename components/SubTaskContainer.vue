@@ -107,7 +107,7 @@ export default Vue.extend({
     },
   },
   mounted() {
-    this.units = this.$constants.units();
+    this.units = this.$constants.UNITS;
   },
 });
 </script>

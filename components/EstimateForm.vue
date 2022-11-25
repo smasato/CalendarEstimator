@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { Task, SubTask, Surprise } from "~/types";
+import { Task } from "~/types";
 import Vue from "vue";
 
 export default Vue.extend({
@@ -53,7 +53,7 @@ export default Vue.extend({
             range: [0, 10],
             unit: "minute(s)",
           },
-        ] as SubTask[],
+        ],
         surprises: [
           {
             name: "",
@@ -62,7 +62,7 @@ export default Vue.extend({
             eventType: "slower",
             probability: [0, 1],
           },
-        ] as Surprise[],
+        ],
       } as Task,
     };
   },
@@ -81,7 +81,7 @@ export default Vue.extend({
             range: [0, 10],
             unit: "minute(s)",
           },
-        ] as SubTask[],
+        ],
         surprises: [
           {
             name: "",
@@ -90,12 +90,11 @@ export default Vue.extend({
             eventType: "slower",
             probability: [0, 1],
           },
-        ] as Surprise[],
+        ],
       } as Task;
     },
     setExample1() {
-      let task = Object.create(this.$constants.example1());
-      this.task = task;
+      this.task = JSON.parse(JSON.stringify(this.$constants.EXAMPLE_1));
     },
     onClickOutside() {
       this.resetTask();
