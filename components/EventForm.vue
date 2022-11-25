@@ -56,16 +56,31 @@ export default Vue.extend({
         start: new Date(),
         end: new Date(),
         timed: true,
-      } as Event,
+      },
     };
   },
   methods: {
     addEvent() {
       this.event.start = new Date(this.start);
       this.event.end = new Date(this.end);
-      this.$accessor.event.addEvent(this.event);
+
+      const event: Event = {
+        id: this.$accessor.event.lastEventId + 1,
+        name: this.event.name,
+        start: this.event.start,
+        end: this.event.end,
+        timed: this.event.timed,
+        color:
+          this.$accessor.event.colors[
+            (this.$accessor.event.lastEventId + 1) %
+              this.$accessor.event.colors.length
+          ],
+      };
+
+      this.$accessor.event.addEvent(event);
       this.resetEvent();
       this.$emit("close-event-form");
+      this.$emit("add-event");
     },
     resetEvent() {
       this.start = "";
