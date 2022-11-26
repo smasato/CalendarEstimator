@@ -102,11 +102,11 @@ function toMinutes(range: [number, number], unit: Unit): MinutesRange {
 }
 
 function calc(subTasks: Array<SubTask>, surprises: Surprise[]) {
-  var maxVal = 0;
-  var samples = [];
+  let maxVal = 0;
+  let samples: number[] = [];
 
   for (var i = num_samples - 1; i >= 0; i--) {
-    var newSample = Math.max(
+    const newSample = Math.max(
       getTaskSample(subTasks) + getSurpriseSample(surprises),
       0
     );
