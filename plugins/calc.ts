@@ -22,8 +22,6 @@ import seedrandom from "seedrandom";
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-jStat.setRandom(seedrandom("time"));
-
 const z_score = zScoreJStat();
 const num_samples = 10000;
 
@@ -102,6 +100,9 @@ function toMinutes(range: [number, number], unit: Unit): MinutesRange {
 }
 
 function calc(subTasks: Array<SubTask>, surprises: Surprise[]) {
+  seedrandom("time", { global: true });
+  jStat.setRandom(Math.random);
+
   let maxVal = 0;
   let samples: number[] = [];
 
@@ -123,13 +124,31 @@ function calc(subTasks: Array<SubTask>, surprises: Surprise[]) {
   };
 }
 
+function prepareSample(samples: number[]): { x: number[]; y: number[] } {
+  const xMax = jStat.max(samples);
+  const xMin = jStat.min(samples);
+  const bins = 1 + Math.floor(Math.log2(samples.length)); // Sturges' formula
+  const binWidth = (xMax - xMin) / bins;
+
+  const x: number[] = Array.from(Array(bins).keys()).map(
+    (i) => xMin + i * binWidth
+  );
+  const y: number[] = jStat.histogram(samples, bins);
+
+  return { x: x, y: y };
+}
+
 export interface CalcPluginInterface {
   calc: (task: Task) => any;
+  prepareSample: (samples: number[]) => { x: number[]; y: number[] };
 }
 
 class CalcPlugin implements CalcPluginInterface {
   calc(task: Task) {
     return calc(task.subTasks, task.surprises);
+  }
+  prepareSample(samples: number[]) {
+    return prepareSample(samples);
   }
 }
 

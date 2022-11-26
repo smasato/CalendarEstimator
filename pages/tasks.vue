@@ -18,6 +18,9 @@
             <v-col
               ><span>{{ task.surprises }}</span></v-col
             >
+            <v-col
+              ><span>{{ calc(task) }}</span></v-col
+            >
           </v-row>
         </div>
       </v-container>
@@ -40,6 +43,11 @@ export default Vue.extend({
   mounted() {
     this.tasks = this.$accessor.task.tasks;
   },
-  methods: {},
+  methods: {
+    calc(task: Task) {
+      const result = this.$calc.calc(task);
+      return this.$calc.prepareSample(result.samples);
+    },
+  },
 });
 </script>
