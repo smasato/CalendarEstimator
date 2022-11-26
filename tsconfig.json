@@ -19,11 +19,7 @@
       "plotly.js": ["node_modules/@types/plotly.js"]
     },
     "types": ["@types/node", "@nuxt/types", "plotly.js", "vuetify"],
-    "typeRoots": [
-      "types",
-      "./node_modules/@types",
-      "./node_modules/@stdlib/types"
-    ]
+    "typeRoots": ["types", "./node_modules/@types"]
   },
   "exclude": ["node_modules"],
   "vueCompilerOptions": {

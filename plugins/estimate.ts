@@ -1,6 +1,5 @@
 import { Plugin } from "@nuxt/types";
 import { jStat } from "jstat";
-import { erfcinv } from "@stdlib/math/base/special";
 import { SubTask, Surprise, Task, Unit, MinutesRange } from "~/types";
 import seedrandom from "seedrandom";
 
@@ -22,32 +21,27 @@ import seedrandom from "seedrandom";
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const z_score = zScoreJStat();
-const num_samples = 10000;
+const Z_SCORE = zScoreJStat();
+const NUM_SAMPLES = 10000;
 
-function zScoreJStat() {
+function zScoreJStat(): number {
   const conf_level = 0.95;
   return jStat.normal.inv(0.5 + conf_level / 2, 0, 1);
 }
 
-function zScorStdlib() {
-  const conf_level = 0.95;
-  return -1.41421356237309505 * 1 * erfcinv(2 * (0.5 + conf_level / 2)) + 0;
-}
-
-function getMean(low: number, up: number) {
+function getMean(low: number, up: number): number {
   return Math.exp((Math.log(low) + Math.log(up)) / 2.0);
 }
 
-function getSD(low: number, up: number) {
-  return Math.exp((Math.log(up) - Math.log(low)) / z_score / 2);
+function getSD(low: number, up: number): number {
+  return Math.exp((Math.log(up) - Math.log(low)) / Z_SCORE / 2);
 }
 
-function sumUp(total: number, num: number) {
+function sumUp(total: number, num: number): number {
   return total + num;
 }
 
-function getTaskSample(subTasks: Array<SubTask>) {
+function getTaskSample(subTasks: Array<SubTask>): number {
   let sumMed = 0;
   subTasks.forEach(function (subTask) {
     const minuteRange = toMinutes(subTask.range, subTask.unit);
@@ -56,7 +50,7 @@ function getTaskSample(subTasks: Array<SubTask>) {
   return sumMed;
 }
 
-function getSurpriseSample(surprises: Surprise[]) {
+function getSurpriseSample(surprises: Surprise[]): number {
   let sumMed = 0;
   surprises.forEach(function (surprise) {
     if (
@@ -72,7 +66,7 @@ function getSurpriseSample(surprises: Surprise[]) {
   return sumMed;
 }
 
-function getSample(range: MinutesRange) {
+function getSample(range: MinutesRange): number {
   const low = pos(range.low);
   const up = pos(range.up);
   return jStat.lognormal.sample(
@@ -88,43 +82,23 @@ function pos(v: number): number {
 function toMinutes(range: [number, number], unit: Unit): MinutesRange {
   switch (unit) {
     case "minute(s)":
-      return { low: range[0], up: range[1] } as MinutesRange;
+      return { low: range[0], up: range[1] };
     case "hour(s)":
-      return { low: range[0] * 60, up: range[1] * 60 } as MinutesRange;
+      return { low: range[0] * 60, up: range[1] * 60 };
     case "day(s)":
       return {
         low: range[0] * 60 * 24,
         up: range[1] * 60 * 24,
-      } as MinutesRange;
+      };
   }
 }
 
-function calc(subTasks: Array<SubTask>, surprises: Surprise[]) {
-  seedrandom("time", { global: true });
-  jStat.setRandom(Math.random);
+export type Histogram = {
+  x: number[];
+  y: number[];
+};
 
-  let maxVal = 0;
-  let samples: number[] = [];
-
-  for (var i = num_samples - 1; i >= 0; i--) {
-    const newSample = Math.max(
-      getTaskSample(subTasks) + getSurpriseSample(surprises),
-      0
-    );
-    samples.push(newSample);
-    maxVal = maxVal < newSample ? newSample : maxVal;
-  }
-  return {
-    mean: samples.reduce(sumUp) / num_samples,
-    median: jStat.median(samples),
-    max: maxVal,
-    min: jStat.min(samples),
-    sd: jStat.stdev(samples),
-    samples: samples.sort(),
-  };
-}
-
-function prepareSample(samples: number[]): { x: number[]; y: number[] } {
+function getHistogram(samples: number[]): Histogram {
   const xMax = jStat.max(samples);
   const xMin = jStat.min(samples);
   const bins = 1 + Math.floor(Math.log2(samples.length)); // Sturges' formula
@@ -138,22 +112,54 @@ function prepareSample(samples: number[]): { x: number[]; y: number[] } {
   return { x: x, y: y };
 }
 
-export interface CalcPluginInterface {
-  calc: (task: Task) => any;
-  prepareSample: (samples: number[]) => { x: number[]; y: number[] };
-}
-
-class CalcPlugin implements CalcPluginInterface {
-  calc(task: Task) {
-    return calc(task.subTasks, task.surprises);
-  }
-  prepareSample(samples: number[]) {
-    return prepareSample(samples);
-  }
-}
-
-const calcPlugin: Plugin = ({ app }, inject): void => {
-  inject("calc", new CalcPlugin());
+export type EstimateResult = {
+  mean: number;
+  median: number;
+  max: number;
+  min: number;
+  sd: number;
+  samples: number[];
+  histogram: { x: number[]; y: number[] };
 };
 
-export default calcPlugin;
+function estimate(task: Task): EstimateResult {
+  seedrandom("time", { global: true });
+  jStat.setRandom(Math.random);
+
+  let maxVal = 0;
+  let samples: number[] = [];
+
+  for (var i = NUM_SAMPLES - 1; i >= 0; i--) {
+    const newSample = Math.max(
+      getTaskSample(task.subTasks) + getSurpriseSample(task.surprises),
+      0
+    );
+    samples.push(newSample);
+    maxVal = maxVal < newSample ? newSample : maxVal;
+  }
+  return {
+    mean: samples.reduce(sumUp) / NUM_SAMPLES,
+    median: jStat.median(samples),
+    max: maxVal,
+    min: jStat.min(samples),
+    sd: jStat.stdev(samples),
+    samples: samples.sort(),
+    histogram: getHistogram(samples),
+  };
+}
+
+export interface EstimatePluginInterface {
+  estimate: (task: Task) => EstimateResult;
+}
+
+class EstimatePlugin implements EstimatePluginInterface {
+  estimate(task: Task) {
+    return estimate(task);
+  }
+}
+
+const estimatePlugin: Plugin = ({ app }, inject): void => {
+  inject("estimate", new EstimatePlugin());
+};
+
+export default estimatePlugin;
