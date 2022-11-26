@@ -45,8 +45,8 @@ export default Vue.extend({
   },
   methods: {
     calc(task: Task) {
-      const result = this.$calc.calc(task);
-      return this.$calc.prepareSample(result.samples);
+      const result = this.$estimate.estimate(task);
+      return result.histogram;
     },
   },
 });
