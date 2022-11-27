@@ -1,5 +1,5 @@
 import { getterTree, mutationTree, actionTree } from "typed-vuex";
-import { Event } from "~/types";
+import { Event } from "~/types/event";
 
 export const state = () => ({
   events: [] as Array<Event>,

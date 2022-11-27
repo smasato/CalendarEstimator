@@ -1,5 +1,5 @@
 import { Plugin } from "@nuxt/types";
-import { Task } from "~/types";
+import { Task } from "~/types/task";
 
 const UNITS = ["minute(s)", "hour(s)", "day(s)"];
 const EVENT_TYPES = ["slower", "faster"];

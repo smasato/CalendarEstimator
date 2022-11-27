@@ -4,6 +4,11 @@
 
     <v-main>
       <v-container>
+        <v-row>
+          <v-col>
+            <v-btn @click="resetTasks">Reset Tasks</v-btn>
+          </v-col>
+        </v-row>
         <div v-for="(task, index) in tasks">
           <v-row>
             <v-col>
@@ -32,7 +37,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Task } from "~/types";
+import { Task } from "~/types/task";
 
 export default Vue.extend({
   data() {
@@ -47,6 +52,10 @@ export default Vue.extend({
     calc(task: Task) {
       const result = this.$estimate.estimate(task);
       return result.histogram;
+    },
+    resetTasks() {
+      this.$accessor.task.resetTasks();
+      this.tasks = this.$accessor.task.tasks;
     },
   },
 });

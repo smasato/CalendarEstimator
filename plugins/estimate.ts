@@ -1,7 +1,7 @@
 import { Plugin } from "@nuxt/types";
 import { jStat } from "jstat";
-import { SubTask, Surprise, Task, Unit, MinutesRange } from "~/types";
 import seedrandom from "seedrandom";
+import { SubTask, Surprise, Task, Unit, MinutesRange } from "~/types/task";
 
 /*
     TimeEstimator
@@ -109,7 +109,7 @@ function getHistogram(samples: number[]): Histogram {
   );
   const y: number[] = jStat.histogram(samples, bins);
 
-  return { x: x, y: y };
+  return { x, y };
 }
 
 export type EstimateResult = {
@@ -127,9 +127,9 @@ function estimate(task: Task): EstimateResult {
   jStat.setRandom(Math.random);
 
   let maxVal = 0;
-  let samples: number[] = [];
+  const samples: number[] = [];
 
-  for (var i = NUM_SAMPLES - 1; i >= 0; i--) {
+  for (let i = NUM_SAMPLES - 1; i >= 0; i--) {
     const newSample = Math.max(
       getTaskSample(task.subTasks) + getSurpriseSample(task.surprises),
       0
