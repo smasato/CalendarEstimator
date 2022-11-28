@@ -33,6 +33,9 @@ export const mutations = mutationTree(state, {
     const index = state.events.findIndex((e) => e.id === event.id);
     state.events[index] = event;
   },
+  resetEvents(state) {
+    state.events = [];
+  },
   initialiseStore() {
     console.log("initialised event store");
   },

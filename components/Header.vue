@@ -5,6 +5,7 @@
     >
     <v-spacer></v-spacer>
     <v-btn depressed to="/tasks/"> Tasks </v-btn>
+    <v-btn depressed to="/events/"> Events </v-btn>
   </v-app-bar>
 </template>
 
