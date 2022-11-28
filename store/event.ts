@@ -1,5 +1,5 @@
 import { getterTree, mutationTree, actionTree } from "typed-vuex";
-import { Event } from "~/types";
+import { Event } from "~/types/event";
 
 export const state = () => ({
   events: [] as Array<Event>,
@@ -32,6 +32,9 @@ export const mutations = mutationTree(state, {
   updateEvent(state, event: Event) {
     const index = state.events.findIndex((e) => e.id === event.id);
     state.events[index] = event;
+  },
+  resetEvents(state) {
+    state.events = [];
   },
   initialiseStore() {
     console.log("initialised event store");

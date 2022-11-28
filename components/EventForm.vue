@@ -1,12 +1,12 @@
 <template>
-  <v-dialog v-model="value" max-width="70%" v-on:click:outside="onClickOutside">
+  <v-dialog v-model="value" max-width="70%" @click:outside="onClickOutside">
     <v-card>
       <v-container>
         <v-row>
           <v-col cols="5">
             <v-text-field
-              hide-details
               v-model="event.name"
+              hide-details
               label="Name"
             ></v-text-field>
           </v-col>
@@ -40,8 +40,8 @@
 </template>
 
 <script lang="ts">
-import { Event } from "~/types";
 import Vue from "vue";
+import { Event } from "~/types/event";
 
 export default Vue.extend({
   props: {

@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="value" max-width="70%" v-on:click:outside="onClickOutside">
+  <v-dialog v-model="value" max-width="70%" @click:outside="onClickOutside">
     <v-card>
       <v-container>
         <v-row>
@@ -13,17 +13,17 @@
         <v-row>
           <v-col>
             <v-text-field
-              hide-details
               v-model="task.name"
+              hide-details
               label="Name (Optional)"
             ></v-text-field>
           </v-col>
         </v-row>
         <v-row>
-          <SubTaskContainer v-bind:subTasks="task.subTasks" />
+          <SubTaskContainer :sub-tasks="task.subTasks" />
         </v-row>
         <v-row>
-          <SurprisesContainer v-bind:suprises="task.surprises" />
+          <SurprisesContainer :surprises="task.surprises" />
         </v-row>
         <v-row>
           <v-col>
@@ -36,10 +36,16 @@
 </template>
 
 <script lang="ts">
-import { Task } from "~/types";
 import Vue from "vue";
+import { Task } from "~/types/task";
+import SubTaskContainer from "~/components/SubTaskContainer.vue";
+import SurprisesContainer from "~/components/SurprisesContainer.vue";
 
 export default Vue.extend({
+  components: {
+    SubTaskContainer,
+    SurprisesContainer,
+  },
   props: {
     value: Boolean,
   },
@@ -68,7 +74,15 @@ export default Vue.extend({
   },
   methods: {
     addTask() {
-      this.$accessor.task.addTask(this.task);
+      const task = this.task;
+      const estimate = this.$estimate.estimate(task);
+      task.id = this.$accessor.task.lastTaskId + 1;
+      task.start = new Date();
+      task.end = new Date(task.start.getTime() + estimate.max * 60 * 1000);
+      task.timed = true;
+      task.color = "blue";
+
+      this.$accessor.task.addTask(task);
       this.resetTask();
       this.$emit("close-dialog");
     },

@@ -9,7 +9,11 @@ const config: NuxtConfig = {
     titleTemplate: "CalendarEstimator - %s",
   },
   css: [],
-  plugins: ["~/plugins/constants.ts", "~/plugins/estimate.ts"],
+  plugins: [
+    "~/plugins/constants.ts",
+    "~/plugins/estimate.ts",
+    { src: "~/plugins/vuex-persist.ts", mode: "client" },
+  ],
   build: {
     transpile: [/typed-vuex/],
     postcss: {

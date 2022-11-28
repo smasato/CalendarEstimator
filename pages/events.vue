@@ -6,25 +6,25 @@
       <v-container>
         <v-row>
           <v-col>
-            <v-btn @click="resetTasks">Reset Tasks</v-btn>
+            <v-btn @click="resetEvents">Reset Events</v-btn>
           </v-col>
         </v-row>
-        <div v-for="(task, index) in tasks" :key="index">
+        <div v-for="(event, index) in events" :key="index">
           <v-row>
             <v-col>
               <span>{{ index }}</span>
             </v-col>
             <v-col
-              ><span>{{ task.name }}</span></v-col
+              ><span>{{ event.id }}</span></v-col
             >
             <v-col
-              ><span>{{ task.subTasks }}</span></v-col
+              ><span>{{ event.name }}</span></v-col
             >
             <v-col
-              ><span>{{ task.surprises }}</span></v-col
+              ><span>{{ event.start }}</span></v-col
             >
             <v-col
-              ><span>{{ calc(task) }}</span></v-col
+              ><span>{{ event.end }}</span></v-col
             >
           </v-row>
         </div>
@@ -37,30 +37,26 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Task } from "~/types/task";
+import { Event } from "~/types/event";
 
 export default Vue.extend({
+  name: "Events",
   data() {
     return {
-      tasks: [] as Task[],
+      events: [] as Event[],
     };
   },
   mounted() {
     this.$store.watch(
-      (state) => state.task.tasks,
-      (tasks) => {
-        this.tasks = tasks;
+      (state) => state.event.events,
+      (events) => {
+        this.events = events;
       }
     );
   },
   methods: {
-    calc(task: Task) {
-      const result = this.$estimate.estimate(task);
-      return result.histogram;
-    },
-    resetTasks() {
-      this.$accessor.task.resetTasks();
-      this.tasks = this.$accessor.task.tasks;
+    resetEvents() {
+      this.$accessor.event.resetEvents();
     },
   },
 });

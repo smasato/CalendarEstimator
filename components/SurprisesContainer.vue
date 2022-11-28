@@ -7,7 +7,7 @@
         </div>
       </v-col>
     </v-row>
-    <v-row v-for="(suprise, index) in suprises" v-bind:key="index">
+    <v-row v-for="(surprise, index) in surprises" v-bind:key="index">
       <v-col cols="11">
         <v-row align="baseline">
           <v-col cols="auto">
@@ -16,7 +16,7 @@
 
           <v-col cols="4">
             <v-text-field
-              v-model="suprise.name"
+              v-model="surprise.name"
               label="Name (Optional)"
               hide-details
             ></v-text-field>
@@ -31,8 +31,8 @@
                 <v-text-field
                   dense
                   min="0"
-                  :max="suprise.range[1]"
-                  v-model="suprise.range[0]"
+                  :max="surprise.range[1]"
+                  v-model="surprise.range[0]"
                   type="number"
                   hide-details
                 ></v-text-field>
@@ -45,7 +45,7 @@
                   dense
                   min="0"
                   max="200"
-                  v-model="suprise.range[1]"
+                  v-model="surprise.range[1]"
                   type="number"
                   v-on:input="updatedRangeUpper(index, $event)"
                   hide-details
@@ -56,14 +56,14 @@
           <v-col cols="2" class="flex-shrink-1 flex-grow-0">
             <v-select
               hide-details
-              v-model="suprise.unit"
+              v-model="surprise.unit"
               :items="units"
             ></v-select>
           </v-col>
           <v-col cols="2" class="flex-shrink-1 flex-grow-0">
             <v-select
               hide-details
-              v-model="suprise.eventType"
+              v-model="surprise.eventType"
               :items="eventTypes"
             ></v-select
           ></v-col>
@@ -79,7 +79,7 @@
               type="number"
               min="0"
               max="1000"
-              v-model="suprise.probability[0]"
+              v-model="surprise.probability[0]"
             ></v-text-field>
           </v-col>
           <v-col cols="auto">
@@ -93,7 +93,7 @@
               type="number"
               min="1"
               max="1000"
-              v-model="suprise.probability[1]"
+              v-model="surprise.probability[1]"
             ></v-text-field>
           </v-col>
           <v-spacer></v-spacer>
@@ -101,8 +101,8 @@
       </v-col>
       <v-col cols="auto">
         <v-row>
-          <v-btn x-small @click="insertSuprise(index)">+</v-btn>
-          <v-btn x-small @click="removesuprise(index)">X</v-btn>
+          <v-btn x-small @click="insertSurprise(index)">+</v-btn>
+          <v-btn x-small @click="removeSurprises(index)">X</v-btn>
         </v-row>
       </v-col>
     </v-row>
@@ -111,11 +111,11 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Surprise } from "~/types";
+import { Surprise } from "~/types/task";
 
 export default Vue.extend({
   props: {
-    suprises: {
+    surprises: {
       type: Array as () => Surprise[],
       required: true,
     },
@@ -127,8 +127,8 @@ export default Vue.extend({
     };
   },
   methods: {
-    insertSuprise(index: number) {
-      this.suprises.splice(index + 1, 0, {
+    insertSurprise(index: number) {
+      this.surprises.splice(index + 1, 0, {
         name: "",
         range: [0, 10],
         unit: "minute(s)",
@@ -136,15 +136,15 @@ export default Vue.extend({
         probability: [0, 1],
       } as Surprise);
     },
-    removesuprise(index: number) {
-      if (this.suprises.length > 1) {
-        this.suprises.splice(index, 1);
+    removeSurprises(index: number) {
+      if (this.surprises.length > 1) {
+        this.surprises.splice(index, 1);
       }
     },
     updatedRangeUpper(index: number, event: any) {
       const temp = Number(event);
-      if (this.suprises[index].range[0] > temp) {
-        this.suprises[index].range[0] = temp;
+      if (this.surprises[index].range[0] > temp) {
+        this.surprises[index].range[0] = temp;
       }
     },
   },

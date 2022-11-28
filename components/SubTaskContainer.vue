@@ -5,11 +5,7 @@
         <div class="text-h5">1. Break the task down into steps</div>
       </v-col>
     </v-row>
-    <v-row
-      align="baseline"
-      v-for="(subTask, index) in subTasks"
-      v-bind:key="index"
-    >
+    <v-row v-for="(subTask, index) in subTasks" :key="index" align="baseline">
       <v-col cols="auto">
         <span>{{ index + 1 }}.</span>
       </v-col>
@@ -27,10 +23,10 @@
           </v-col>
           <v-col cols="2">
             <v-text-field
+              v-model="subTask.range[0]"
               class="mr-1"
               min="0"
               :max="subTask.range[1]"
-              v-model="subTask.range[0]"
               type="number"
               hide-details
             ></v-text-field>
@@ -40,18 +36,18 @@
           </v-col>
           <v-col cols="2">
             <v-text-field
+              v-model="subTask.range[1]"
               min="0"
               max="200"
-              v-model="subTask.range[1]"
               type="number"
-              v-on:input="updatedRangeUpper(index, $event)"
               hide-details
+              @input="updatedRangeUpper(index, $event)"
             ></v-text-field>
           </v-col>
           <v-col cols="3">
             <v-select
-              hide-details
               v-model="subTask.unit"
+              hide-details
               :items="units"
             ></v-select>
           </v-col>
@@ -72,7 +68,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { SubTask } from "~/types";
+import { SubTask } from "~/types/task";
 
 export default Vue.extend({
   props: {
@@ -85,6 +81,9 @@ export default Vue.extend({
     return {
       units: [] as string[],
     };
+  },
+  mounted() {
+    this.units = this.$constants.UNITS;
   },
   methods: {
     insertSubTask(index: number) {
@@ -105,9 +104,6 @@ export default Vue.extend({
         this.subTasks[index].range[0] = temp;
       }
     },
-  },
-  mounted() {
-    this.units = this.$constants.UNITS;
   },
 });
 </script>
