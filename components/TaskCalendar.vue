@@ -33,9 +33,14 @@
         @mouseup:time="endDrag"
         @mouseleave.native="cancelDrag"
       >
-        <template #event="{ event, timed, eventSummary }">
+        <template #event="{ event, timed, timeSummary }">
           <div class="v-event-draggable">
-            <component :is="{ render: eventSummary }"></component>
+            <div class="v-event-summary">
+              <strong>{{ event.name }}</strong
+              >, {{ timeSummary() }}
+              <p class="mb-0">min: {{ taskEstimate(event).min }} minutes</p>
+              <p class="mb-0">max: {{ taskEstimate(event).max }} minutes</p>
+            </div>
           </div>
           <div v-if="timed" class="v-event-drag-bottom"></div>
         </template>
@@ -58,9 +63,9 @@ export default Vue.extend({
     dragEvent: null as any,
     dragStart: null as any,
     dragTime: null as any,
-    createEvent: null as any,
     createStart: null as any,
     extendOriginal: null as any,
+    taskEstimateResult: {},
   }),
   mounted() {
     this.$store.watch(
@@ -71,6 +76,14 @@ export default Vue.extend({
     );
   },
   methods: {
+    taskEstimate(task: Task) {
+      if (this.taskEstimateResult[task.id]) {
+        return this.taskEstimateResult[task.id];
+      } else {
+        this.taskEstimateResult[task.id] = this.estimate(task);
+        return this.estimate(task);
+      }
+    },
     startDrag({ event, timed }) {
       if (event && timed) {
         this.dragEvent = event;
@@ -108,35 +121,34 @@ export default Vue.extend({
         const newStart = new Date(this.roundTime(newStartTime));
         const newEnd = new Date(newStart.getTime() + duration);
 
+        this.dragEvent.start = newStart;
+        this.dragEvent.end = newEnd;
+      }
+    },
+    endDrag(tms) {
+      if (this.dragEvent && this.dragTime !== null) {
+        const mouse = this.toTime(tms);
+
+        const start = this.dragEvent.start;
+        const end = this.dragEvent.end;
+        const duration = end - start;
+        const newStartTime = mouse - this.dragTime;
+        const newStart = new Date(this.roundTime(newStartTime));
+        const newEnd = new Date(newStart.getTime() + duration);
         const newEvent = {
           ...this.dragEvent,
           start: newStart,
           end: newEnd,
         };
         this.$accessor.task.updateTask(newEvent);
+        // this.fetchEvents({ start: this.start, end: this.end });
       }
-    },
-    endDrag() {
       this.dragTime = null;
       this.dragEvent = null;
-      this.createEvent = null;
       this.createStart = null;
       this.extendOriginal = null;
-      this.fetchEvents({ start: this.start, end: this.end });
     },
     cancelDrag() {
-      if (this.createEvent) {
-        if (this.extendOriginal) {
-          this.createEvent.end = this.extendOriginal;
-        } else {
-          const i = this.tasks.indexOf(this.createEvent);
-          if (i !== -1) {
-            this.tasks.splice(i, 1);
-          }
-        }
-      }
-
-      this.createEvent = null;
       this.createStart = null;
       this.dragTime = null;
       this.dragEvent = null;
@@ -185,6 +197,9 @@ export default Vue.extend({
         }
       });
       this.tasks = tasks;
+    },
+    estimate(task: Task) {
+      return this.$estimate.estimate(task);
     },
   },
 });
