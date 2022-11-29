@@ -9,7 +9,14 @@
             <v-btn @click="resetEvents">Reset Events</v-btn>
           </v-col>
         </v-row>
-        <div v-for="(event, index) in events" :key="index">
+        <v-row>
+          <v-col>index</v-col>
+          <v-col>id</v-col>
+          <v-col>name</v-col>
+          <v-col>start</v-col>
+          <v-col>end</v-col>
+        </v-row>
+        <div v-for="(event, index) in events" :key="event.id">
           <v-row>
             <v-col>
               <span>{{ index }}</span>
@@ -47,6 +54,7 @@ export default Vue.extend({
     };
   },
   mounted() {
+    this.events = this.$accessor.event.events;
     this.$store.watch(
       (state) => state.event.events,
       (events) => {
