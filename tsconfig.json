@@ -18,7 +18,13 @@
       "@/*": ["./*"],
       "plotly.js": ["node_modules/@types/plotly.js"]
     },
-    "types": ["@types/node", "@nuxt/types", "plotly.js", "vuetify"],
+    "types": [
+      "@types/node",
+      "@nuxt/types",
+      "plotly.js",
+      "@nuxt/vue-app",
+      "@nuxtjs/vuetify"
+    ],
     "typeRoots": ["types", "./node_modules/@types"]
   },
   "exclude": ["node_modules"],

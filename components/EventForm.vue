@@ -41,6 +41,7 @@
 <script lang="ts">
 import Vue from "vue";
 import dayjs from "dayjs";
+import VForm from "vuetify/lib/components/VForm";
 import { Event } from "~/types/event";
 
 export default Vue.extend({
@@ -64,7 +65,8 @@ export default Vue.extend({
   },
   methods: {
     addEvent() {
-      this.$refs.form.validate();
+      const form = this.$refs.form as VForm;
+      form.validate();
 
       this.event.start = new Date(this.start);
       this.event.end = dayjs(this.event.start)
