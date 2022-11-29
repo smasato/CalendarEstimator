@@ -17,12 +17,12 @@
         <v-spacer></v-spacer>
       </v-toolbar>
     </v-sheet>
-    <v-sheet>
+    <v-sheet width="50%">
       <v-calendar
         ref="calendar"
         v-model="value"
         color="primary"
-        type="4day"
+        type="day"
         :events="events"
         :event-color="getEventColor"
         :event-ripple="false"
@@ -56,8 +56,6 @@ import { Event } from "~/types/event";
 export default Vue.extend({
   data: () => ({
     value: dayjs().format("YYYY-MM-DD"),
-    start: dayjs().format("YYYY-MM-DD"),
-    end: dayjs().add(3, "day").format("YYYY-MM-DD"),
     events: [] as Event[],
     dragEvent: null as any,
     dragStart: null as any,
@@ -207,12 +205,8 @@ export default Vue.extend({
     fetchEvents(to?: any) {
       const events = [] as Event[];
 
-      if (to && to.start && to.end) {
-        this.start = to.start.date;
-        this.end = to.end.date;
-      }
-      const startDay = dayjs(this.start).startOf("day");
-      const endDay = dayjs(this.end).endOf("day");
+      const startDay = dayjs(this.value).startOf("day");
+      const endDay = dayjs(this.value).endOf("day");
 
       this.$accessor.event.events.forEach((event) => {
         const eventStart = dayjs(event.start);
