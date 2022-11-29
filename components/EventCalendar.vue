@@ -117,6 +117,27 @@ export default Vue.extend({
         const newStart = new Date(this.roundTime(newStartTime));
         const newEnd = new Date(newStart.getTime() + duration);
 
+        this.dragEvent.start = newStart;
+        this.dragEvent.end = newEnd;
+      } else if (this.createEvent && this.createStart !== null) {
+        const mouseRounded = this.roundTime(mouse, false);
+        const min = Math.min(mouseRounded, this.createStart);
+        const max = Math.max(mouseRounded, this.createStart);
+
+        this.createEvent.start = min;
+        this.createEvent.end = max;
+      }
+    },
+    endDrag(tms) {
+      const mouse = this.toTime(tms);
+
+      if (this.dragEvent && this.dragTime !== null) {
+        const start = this.dragEvent.start;
+        const end = this.dragEvent.end;
+        const duration = end - start;
+        const newStartTime = mouse - this.dragTime;
+        const newStart = new Date(this.roundTime(newStartTime));
+        const newEnd = new Date(newStart.getTime() + duration);
         const newEvent = {
           ...this.dragEvent,
           start: newStart,
@@ -124,26 +145,24 @@ export default Vue.extend({
         };
         this.$accessor.event.updateEvent(newEvent);
       } else if (this.createEvent && this.createStart !== null) {
-        // イベントの終了時刻を変更
-        const mouseRounded = this.roundTime(mouse, false);
-        const min = Math.min(mouseRounded, this.createStart);
-        const max = Math.max(mouseRounded, this.createStart);
+        const start = this.createEvent.start;
+        const end = this.createEvent.end;
+        const duration = end - start;
+        const newStart = new Date(this.roundTime(start));
+        const newEnd = new Date(newStart.getTime() + duration);
 
         const newEvent = {
           ...this.createEvent,
-          start: min,
-          end: max,
+          start: newStart,
+          end: newEnd,
         };
         this.$accessor.event.updateEvent(newEvent);
       }
-    },
-    endDrag() {
       this.dragTime = null;
       this.dragEvent = null;
       this.createEvent = null;
       this.createStart = null;
       this.extendOriginal = null;
-      this.fetchEvents({ start: this.start, end: this.end });
     },
     cancelDrag() {
       if (this.createEvent) {
