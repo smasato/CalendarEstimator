@@ -17,12 +17,12 @@
         <v-spacer></v-spacer>
       </v-toolbar>
     </v-sheet>
-    <v-sheet>
+    <v-sheet width="50%">
       <v-calendar
         ref="calendar"
         v-model="value"
         color="primary"
-        type="4day"
+        type="day"
         :events="tasks"
         :event-color="getEventColor"
         :event-ripple="false"
@@ -57,8 +57,6 @@ import { Task } from "~/types/task";
 export default Vue.extend({
   data: () => ({
     value: dayjs().format("YYYY-MM-DD"),
-    start: dayjs().format("YYYY-MM-DD"),
-    end: dayjs().add(3, "day").format("YYYY-MM-DD"),
     tasks: [] as Task[],
     dragEvent: null as any,
     dragStart: null as any,
@@ -141,7 +139,6 @@ export default Vue.extend({
           end: newEnd,
         };
         this.$accessor.task.updateTask(newEvent);
-        // this.fetchEvents({ start: this.start, end: this.end });
       }
       this.dragTime = null;
       this.dragEvent = null;
@@ -179,12 +176,8 @@ export default Vue.extend({
     fetchEvents(to?: any) {
       const tasks = [] as Task[];
 
-      if (to && to.start && to.end) {
-        this.start = to.start.date;
-        this.end = to.end.date;
-      }
-      const startDay = dayjs(this.start).startOf("day");
-      const endDay = dayjs(this.end).endOf("day");
+      const startDay = dayjs(this.value).startOf("day");
+      const endDay = dayjs(this.value).endOf("day");
 
       this.$accessor.task.tasks.forEach((task) => {
         const eventStart = dayjs(task.start);
