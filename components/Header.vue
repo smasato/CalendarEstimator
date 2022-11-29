@@ -4,8 +4,11 @@
       >Calendar Estimator</v-toolbar-title
     >
     <v-spacer></v-spacer>
-    <v-btn depressed to="/tasks/"> Tasks </v-btn>
-    <v-btn depressed to="/events/"> Events </v-btn>
+    <div v-if="$accessor.debug">
+      <v-btn depressed @click="$router.push('/tasks')">Tasks</v-btn>
+      <v-btn depressed @click="$router.push('/events')">Events</v-btn>
+      <v-btn depressed @click="$router.push('/debug')">Debug</v-btn>
+    </div>
   </v-app-bar>
 </template>
 
@@ -13,6 +16,9 @@
 import Vue from "vue";
 
 export default Vue.extend({
-  methods: {},
+  name: "Header",
+  data() {
+    return {};
+  },
 });
 </script>
