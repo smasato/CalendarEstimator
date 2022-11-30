@@ -7,6 +7,7 @@
     "start": "nuxt start",
     "prepare": "husky install",
     "lint:js": "eslint --ext \".js,.vue\"",
+    "lint:type": "tsc --noEmit",
     "lint:style": "stylelint \"**/*.{vue,css}\"",
     "lint": "npm run lint:js && npm run lint:style"
   },
@@ -54,6 +55,11 @@
     "vuetify": "^2.6.12"
   },
   "lint-staged": {
+    "*.{ts, js, vue}": [
+      "npm run lint:type",
+      "npm run lint:js",
+      "npm run lint:style"
+    ],
     "**/*": "prettier --write --ignore-unknown"
   }
 }
