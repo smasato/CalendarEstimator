@@ -8,6 +8,7 @@
     "prepare": "husky install",
     "lint:js": "eslint --ext \".js,.vue\"",
     "lint:type": "tsc --noEmit",
+    "lint:vue:type": "vue-tsc --noEmit",
     "lint:style": "stylelint \"**/*.{vue,css}\"",
     "lint": "npm run lint:js && npm run lint:style"
   },
@@ -52,13 +53,15 @@
     "stylelint-config-prettier-scss": "^0.0.1",
     "stylelint-config-recess-order": "^3.0.0",
     "stylelint-config-standard-scss": "^6.1.0",
+    "vue-tsc": "^1.0.10",
     "vuetify": "^2.6.12"
   },
   "lint-staged": {
-    "*.{ts, js, vue}": [
-      "npm run lint:type",
-      "npm run lint:js",
-      "npm run lint:style"
+    "*.{ts}": [
+      "npm run lint:type"
+    ],
+    "*.{vue}": [
+      "npm run lint:vue:type"
     ],
     "**/*": "prettier --write --ignore-unknown"
   }
