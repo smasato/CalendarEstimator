@@ -57,10 +57,10 @@
     "vuetify": "^2.6.12"
   },
   "lint-staged": {
-    "*.{ts}": [
+    "*.ts": [
       "npm run lint:type"
     ],
-    "*.{vue}": [
+    "*.vue": [
       "npm run lint:vue:type"
     ],
     "**/*": "prettier --write --ignore-unknown"
