@@ -27,7 +27,12 @@ const config: NuxtConfig = {
     "@nuxtjs/stylelint-module",
     "@nuxt/typescript-build",
     "nuxt-typed-vuex",
-    "@nuxtjs/vuetify",
+    [
+      "@nuxtjs/vuetify",
+      {
+        treeShake: true,
+      },
+    ],
     "@nuxtjs/style-resources",
     "@nuxt/postcss8",
   ],

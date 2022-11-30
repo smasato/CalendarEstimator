@@ -140,7 +140,7 @@ function estimate(task: Task): EstimateResult {
   return {
     mean: samples.reduce(sumUp) / NUM_SAMPLES,
     median: jStat.median(samples),
-    max: maxVal,
+    max: jStat.max(samples),
     min: jStat.min(samples),
     sd: jStat.stdev(samples),
     samples: samples.sort(),
