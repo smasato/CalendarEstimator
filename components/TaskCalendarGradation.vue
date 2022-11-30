@@ -33,15 +33,8 @@ export default VCalendar.extend({
         end,
         timed: true,
       };
-      const minDate = parseDate(
-        dayjs(event.input.start)
-          .add(event.input.estimateResult.min, "minute")
-          .toDate()
-      );
-      const minTop = day.timeToY(minDate);
-      const minPercent = this.calcPercentPosition(minTop - top, height);
 
-      const percents = [];
+      const percents: { xPercent; percent }[] = [];
       event.input.estimateResult.histogram.x.forEach((x, i) => {
         const y = event.input.estimateResult.histogram.y[i];
         const xDate = parseDate(
@@ -49,23 +42,19 @@ export default VCalendar.extend({
         );
         const xTop = day.timeToY(xDate);
         const xPercent = this.calcPercentPosition(xTop - top, height);
-        const ySum = event.input.estimateResult.histogram.y
-          .slice(0, i + 1)
-          .reduce((a, b) => a + b, 0);
-        console.log(ySum);
         const percent = y / event.input.estimateResult.samples.length;
         percents.push({ xPercent, percent });
       });
-      percents[0].percent = 1;
-      console.log(percents);
-      const background = [];
-      percents.forEach((p) => {
-        background.push(`rgb(33 150 243 / ${p.percent}) ${p.xPercent}%`);
-      });
+      percents[0].percent = 1; // 度数分布表の最初の値は最小値の確率なので、1にする
 
-      console.log(
-        `linear-gradient(to bottom, ${background.join(", ")} !important)`
-      );
+      const linerColorStops: string[] = [];
+      percents.forEach((p) => {
+        linerColorStops.push(`rgb(33 150 243 / ${p.percent}) ${p.xPercent}%`);
+      });
+      const linearGradient = `linear-gradient(to bottom, ${linerColorStops.join(
+        ", "
+      )})`;
+
       // @ts-ignore
       return this.genEvent(event, scope, true, {
         staticClass: "v-event-timed",
@@ -74,14 +63,12 @@ export default VCalendar.extend({
           height: `${height}px`,
           left: `${left}%`,
           width: `${width}%`,
-          background: `linear-gradient(to bottom, ${background.join(
-            ", "
-          )}) !important`,
-          // background: `linear-gradient(to bottom, rgb(33 150 243 / 100%) ${minPercent}%, rgb(33 150 243 / 0%) 100%) !important`,
+          background: `${linearGradient} !important`,
         },
       });
     },
-    calcPercentPosition(yPosition, height) {
+    // heightに対するyPositionの割合を計算する
+    calcPercentPosition(yPosition: number, height: number) {
       return (yPosition / height) * 100;
     },
   },
