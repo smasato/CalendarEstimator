@@ -18,12 +18,15 @@
       </v-toolbar>
     </v-sheet>
     <v-sheet width="50%">
-      <v-calendar
+      <TaskCalendarGradation
         ref="calendar"
         v-model="value"
         color="primary"
         type="day"
-        :events="tasks"
+        first-interval="0"
+        interval-minutes="5"
+        :interval-count="(24 * 60) / 5"
+        :events="tasksWithEstimateResult"
         :event-color="getEventColor"
         :event-ripple="false"
         @change="fetchEvents"
@@ -34,17 +37,15 @@
         @mouseleave.native="cancelDrag"
       >
         <template #event="{ event, timed, timeSummary }">
-          <div class="v-event-draggable">
-            <div class="v-event-summary">
-              <strong>{{ event.name }}</strong
-              >, {{ timeSummary() }}
-              <p class="mb-0">min: {{ taskEstimate(event).min }} minutes</p>
-              <p class="mb-0">max: {{ taskEstimate(event).max }} minutes</p>
-            </div>
-          </div>
-          <div v-if="timed" class="v-event-drag-bottom"></div>
+          <CalendarEventGradation
+            :time-summary="timeSummary"
+            :timed="timed"
+            :event="event"
+            :estimate-result="taskEstimate(event)"
+          >
+          </CalendarEventGradation>
         </template>
-      </v-calendar>
+      </TaskCalendarGradation>
     </v-sheet>
   </v-container>
 </template>
@@ -52,12 +53,14 @@
 <script lang="ts">
 import Vue from "vue";
 import dayjs from "dayjs";
-import { Task } from "~/types/task";
+import { Task, TaskWithEstimateResult } from "~/types/task";
+import { EstimateResult } from "~/plugins/estimate";
 
 export default Vue.extend({
   data: () => ({
     value: dayjs().format("YYYY-MM-DD"),
     tasks: [] as Task[],
+    tasksWithEstimateResult: [] as TaskWithEstimateResult[],
     dragEvent: null as any,
     dragStart: null as any,
     dragTime: null as any,
@@ -70,6 +73,12 @@ export default Vue.extend({
       (state) => state.task.tasks,
       (tasks) => {
         this.tasks = tasks;
+        this.tasksWithEstimateResult = tasks.map((task) => {
+          return {
+            ...task,
+            estimateResult: this.taskEstimate(task),
+          };
+        });
       }
     );
   },
@@ -133,12 +142,17 @@ export default Vue.extend({
         const newStartTime = mouse - this.dragTime;
         const newStart = new Date(this.roundTime(newStartTime));
         const newEnd = new Date(newStart.getTime() + duration);
-        const newEvent = {
-          ...this.dragEvent,
-          start: newStart,
-          end: newEnd,
-        };
-        this.$accessor.task.updateTask(newEvent);
+        const dragTask = this.tasks.find(
+          (task) => task.id === this.dragEvent.id
+        );
+        if (dragTask) {
+          const newEvent = {
+            ...dragTask,
+            start: newStart,
+            end: newEnd,
+          };
+          this.$accessor.task.updateTask(newEvent);
+        }
       }
       this.dragTime = null;
       this.dragEvent = null;
@@ -190,6 +204,14 @@ export default Vue.extend({
         }
       });
       this.tasks = tasks;
+
+      this.tasksWithEstimateResult = [] as TaskWithEstimateResult[];
+      this.tasks.forEach((task) => {
+        this.tasksWithEstimateResult.push({
+          ...task,
+          estimateResult: this.taskEstimate(task) as EstimateResult,
+        });
+      });
     },
     estimate(task: Task) {
       return this.$estimate.estimate(task);
@@ -197,39 +219,3 @@ export default Vue.extend({
   },
 });
 </script>
-
-<style scoped lang="scss">
-.v-event-draggable {
-  padding-left: 6px;
-}
-
-.v-event-timed {
-  user-select: none;
-}
-
-.v-event-drag-bottom {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 4px;
-  height: 4px;
-  cursor: ns-resize;
-
-  &::after {
-    display: none;
-    position: absolute;
-    left: 50%;
-    height: 4px;
-    border-top: 1px solid white;
-    border-bottom: 1px solid white;
-    width: 16px;
-    margin-left: -8px;
-    opacity: 0.8;
-    content: "";
-  }
-
-  &:hover::after {
-    display: block;
-  }
-}
-</style>
