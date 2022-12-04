@@ -3,13 +3,13 @@
     <Header />
 
     <v-main>
-      <v-container fluid>
-        <EstimateForm
-          v-model="estimateForm"
-          @close-dialog="estimateForm = false"
-        />
-        <EventForm v-model="eventForm" @close-event-form="eventForm = false" />
-        <v-row class="fill-height">
+      <EstimateForm
+        v-model="estimateForm"
+        @close-dialog="estimateForm = false"
+      />
+      <EventForm v-model="eventForm" @close-event-form="eventForm = false" />
+      <v-container fluid style="height: calc(100vh - 64px)">
+        <v-row>
           <v-col cols="3">
             <v-row>
               <v-col align="center">
@@ -29,7 +29,7 @@
               </v-col>
             </v-row>
           </v-col>
-          <v-col>
+          <v-col cols="9">
             <EventCalendar v-if="mode === 'normal'" />
             <TaskCalendar v-else />
           </v-col>

@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid style="height: 89vh">
     <v-sheet height="64">
       <v-toolbar flat>
         <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday"
@@ -17,7 +17,7 @@
         <v-spacer></v-spacer>
       </v-toolbar>
     </v-sheet>
-    <v-sheet width="50%">
+    <v-sheet width="50%" height="100%" class="overflow-y-auto">
       <TaskCalendarGradation
         ref="calendar"
         v-model="value"
