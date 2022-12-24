@@ -4,7 +4,7 @@
     <v-main>
       <v-container>
         <v-row>
-          <v-col> debug: {{ $accessor.debug }} </v-col>
+          <v-col> debug: {{ $accessor.debug.isDebug }} </v-col>
           <v-col>
             <v-btn @click="toggleDebug">Toggle Debug</v-btn>
           </v-col>
@@ -25,7 +25,7 @@ export default Vue.extend({
   },
   methods: {
     toggleDebug() {
-      this.$accessor.setDebug(!this.$accessor.debug);
+      this.$accessor.debug.setDebug(!this.$accessor.debug.isDebug);
     },
   },
 });

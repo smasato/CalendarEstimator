@@ -1,4 +1,5 @@
 import VuexPersistence from "vuex-persist";
+import { accessorType } from "~/store";
 
 export default ({ store }) => {
   new VuexPersistence({
@@ -12,6 +13,10 @@ export default ({ store }) => {
         return value;
       });
     },
+    reducer: (state: typeof accessorType) => ({
+      event: state.event,
+      task: state.task,
+    }),
     modules: ["task", "event"],
   }).plugin(store);
 };
