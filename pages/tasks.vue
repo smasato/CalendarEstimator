@@ -9,6 +9,13 @@
             <v-btn @click="resetTasks">Reset Tasks</v-btn>
           </v-col>
         </v-row>
+        <v-row>
+          <v-col>index</v-col>
+          <v-col>name</v-col>
+          <v-col>subTasks</v-col>
+          <v-col>surprises</v-col>
+          <v-col>histogram</v-col>
+        </v-row>
         <div v-for="(task, index) in tasks" :key="index">
           <v-row>
             <v-col>
@@ -40,12 +47,14 @@ import Vue from "vue";
 import { Task } from "~/types/task";
 
 export default Vue.extend({
+  name: "Tasks",
   data() {
     return {
       tasks: [] as Task[],
     };
   },
   mounted() {
+    this.tasks = this.$accessor.task.tasks;
     this.$store.watch(
       (state) => state.task.tasks,
       (tasks) => {
@@ -60,7 +69,6 @@ export default Vue.extend({
     },
     resetTasks() {
       this.$accessor.task.resetTasks();
-      this.tasks = this.$accessor.task.tasks;
     },
   },
 });
