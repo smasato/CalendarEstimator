@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="value" width="50%" @click:outside="onClickOutside">
+  <v-dialog v-model="dialog" width="50%" @click:outside="onClickOutside">
     <v-card>
       <v-container>
         <v-row>
@@ -12,12 +12,12 @@
                 label="Name"
               ></v-text-field>
               <v-text-field
-                v-model="start"
+                v-model="event.start"
                 type="datetime-local"
                 label="Start Date"
               />
               <v-text-field
-                v-model="duration"
+                v-model="event.duration"
                 dense
                 label="Duration"
                 type="number"
@@ -50,34 +50,40 @@ export default Vue.extend({
   },
   data() {
     return {
+      dialog: false,
       valid: false,
-      start: dayjs().startOf("day").format("YYYY-MM-DDTHH:mm"),
-      duration: 1,
       event: {
         name: "",
-        start: new Date(),
-        end: new Date(),
+        start: dayjs(this.$constants.DEFAULT_DATE)
+          .startOf("day")
+          .format("YYYY-MM-DDTHH:mm"),
+        duration: 1,
       },
       rules: {
         required: (v: string) => !!v || "Required.",
       },
     };
   },
+  watch: {
+    value: {
+      immediate: true,
+      handler(value) {
+        this.dialog = value;
+      },
+    },
+  },
   methods: {
     addEvent() {
       const form = this.$refs.form as VForm;
       form.validate();
 
-      this.event.start = new Date(this.start);
-      this.event.end = dayjs(this.event.start)
-        .add(this.duration, "minute")
-        .toDate();
-
+      const start = dayjs(this.event.start);
+      const end = start.add(this.event.duration, "minute");
       const event: Event = {
         id: this.$accessor.event.lastEventId + 1,
         name: this.event.name,
-        start: this.event.start,
-        end: this.event.end,
+        start: start.toDate(),
+        end: end.toDate(),
         timed: true,
         color:
           this.$constants.CALENDAR_COLORS[
@@ -92,14 +98,14 @@ export default Vue.extend({
       this.$emit("add-event");
     },
     resetEvent() {
-      this.start = "";
-      this.duration = 1;
+      this.event.name = "";
+      this.event.start = dayjs(this.$constants.DEFAULT_DATE)
+        .startOf("day")
+        .format("YYYY-MM-DDTHH:mm");
+      this.event.duration = 1;
 
-      this.event = {
-        name: "",
-        start: new Date(),
-        end: new Date(),
-      };
+      const form = this.$refs.form as VForm;
+      form.resetValidation();
     },
     onClickOutside() {
       this.resetEvent();
