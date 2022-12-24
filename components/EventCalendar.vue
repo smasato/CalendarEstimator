@@ -1,31 +1,15 @@
 <template>
   <v-container fluid style="height: 89vh">
-    <v-sheet height="64">
-      <v-toolbar flat>
-        <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday"
-          >今日</v-btn
-        >
-        <v-btn fab text small color="grey darken-2" @click="prev">
-          <v-icon small>mdi-chevron-left</v-icon>
-        </v-btn>
-        <v-btn fab text small color="grey darken-2" @click="next">
-          <v-icon small>mdi-chevron-right</v-icon>
-        </v-btn>
-        <v-toolbar-title v-if="$refs.calendar">{{
-          $refs.calendar.title
-        }}</v-toolbar-title>
-        <v-spacer></v-spacer>
-      </v-toolbar>
-    </v-sheet>
     <v-sheet width="50%" height="100%" class="overflow-y-auto">
       <v-calendar
         ref="calendar"
         v-model="value"
-        color="primary"
-        type="day"
-        :events="events"
         :event-color="getEventColor"
         :event-ripple="false"
+        :events="events"
+        :hide-header="true"
+        color="primary"
+        type="day"
         @change="fetchEvents"
         @mousedown:event="startDrag"
         @mousedown:time="startTime"
@@ -50,8 +34,10 @@
 import Vue from "vue";
 import dayjs from "dayjs";
 import { Event } from "~/types/event";
+import CalendarEventNormal from "~/components/CalendarEventNormal.vue";
 
 export default Vue.extend({
+  components: { CalendarEventNormal },
   data: () => ({
     value: dayjs().format("YYYY-MM-DD"),
     events: [] as Event[],
@@ -188,19 +174,7 @@ export default Vue.extend({
     getEventColor(event: Event) {
       return event.color;
     },
-    setToday() {
-      this.value = dayjs().format("YYYY-MM-DD");
-    },
-    prev() {
-      // @ts-ignore
-      this.$refs.calendar.prev();
-    },
-    next() {
-      // @ts-ignore
-      this.$refs.calendar.next();
-    },
-    // @ts-ignore
-    fetchEvents(to?: any) {
+    fetchEvents() {
       const events = [] as Event[];
 
       const startDay = dayjs(this.value).startOf("day");
