@@ -3,6 +3,15 @@ import { Task } from "~/types/task";
 
 const UNITS = ["minute(s)", "hour(s)", "day(s)"];
 const EVENT_TYPES = ["slower", "faster"];
+const CALENDAR_COLORS = [
+  "blue",
+  "indigo",
+  "deep-purple",
+  "cyan",
+  "green",
+  "orange",
+  "grey darken-1",
+];
 
 const EXAMPLE_1 = {
   name: "Example 1",
@@ -83,12 +92,14 @@ export interface ConstantsPluginInterface {
   readonly UNITS: Array<string>;
   readonly EVENT_TYPES: Array<string>;
   readonly EXAMPLE_1: Task;
+  readonly CALENDAR_COLORS: Array<string>;
 }
 
 class ConstantsPlugin implements ConstantsPluginInterface {
   readonly UNITS = UNITS;
   readonly EVENT_TYPES = EVENT_TYPES;
   readonly EXAMPLE_1 = EXAMPLE_1;
+  readonly CALENDAR_COLORS = CALENDAR_COLORS;
 }
 
 const constantsPlugin: Plugin = (context, inject) => {

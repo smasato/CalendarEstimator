@@ -3,22 +3,12 @@ import { Event } from "~/types/event";
 
 export const state = () => ({
   events: [] as Array<Event>,
-  colors: [
-    "blue",
-    "indigo",
-    "deep-purple",
-    "cyan",
-    "green",
-    "orange",
-    "grey darken-1",
-  ],
 });
 
 export type RootState = ReturnType<typeof state>;
 
 export const getters = getterTree(state, {
   events: (state) => state.events,
-  colors: (state) => state.colors,
   lastEventId: (state) => {
     const lastEvent = state.events[state.events.length - 1];
     return lastEvent ? lastEvent.id : -1;

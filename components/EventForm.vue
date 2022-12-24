@@ -80,9 +80,9 @@ export default Vue.extend({
         end: this.event.end,
         timed: true,
         color:
-          this.$accessor.event.colors[
+          this.$constants.CALENDAR_COLORS[
             (this.$accessor.event.lastEventId + 1) %
-              this.$accessor.event.colors.length
+              this.$constants.CALENDAR_COLORS.length
           ],
       };
 
