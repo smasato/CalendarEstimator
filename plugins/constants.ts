@@ -1,4 +1,5 @@
 import { Plugin } from "@nuxt/types";
+import dayjs from "dayjs";
 import { Task } from "~/types/task";
 
 const UNITS = ["minute(s)", "hour(s)", "day(s)"];
@@ -12,6 +13,7 @@ const CALENDAR_COLORS = [
   "orange",
   "grey darken-1",
 ];
+const DEFAULT_DATE = "2023-01-01";
 
 const EXAMPLE_1 = {
   name: "Example 1",
@@ -93,6 +95,7 @@ export interface ConstantsPluginInterface {
   readonly EVENT_TYPES: Array<string>;
   readonly EXAMPLE_1: Task;
   readonly CALENDAR_COLORS: Array<string>;
+  readonly DEFAULT_DATE: string;
 }
 
 class ConstantsPlugin implements ConstantsPluginInterface {
@@ -100,6 +103,7 @@ class ConstantsPlugin implements ConstantsPluginInterface {
   readonly EVENT_TYPES = EVENT_TYPES;
   readonly EXAMPLE_1 = EXAMPLE_1;
   readonly CALENDAR_COLORS = CALENDAR_COLORS;
+  readonly DEFAULT_DATE = DEFAULT_DATE;
 }
 
 const constantsPlugin: Plugin = (context, inject) => {

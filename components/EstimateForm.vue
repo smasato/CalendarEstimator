@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="value" max-width="70%" @click:outside="onClickOutside">
+  <v-dialog v-model="dialog" max-width="70%" @click:outside="onClickOutside">
     <v-card>
       <v-container>
         <v-row>
@@ -37,6 +37,7 @@
 
 <script lang="ts">
 import Vue from "vue";
+import dayjs from "dayjs";
 import { Task } from "~/types/task";
 import SubTaskContainer from "~/components/SubTaskContainer.vue";
 import SurprisesContainer from "~/components/SurprisesContainer.vue";
@@ -51,6 +52,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      dialog: false,
       task: {
         name: "",
         subTasks: [
@@ -72,13 +74,24 @@ export default Vue.extend({
       } as Task,
     };
   },
+  watch: {
+    value: {
+      immediate: true,
+      handler(value) {
+        this.dialog = value;
+      },
+    },
+  },
   methods: {
     addTask() {
       const task = this.task;
       const estimate = this.$estimate.estimate(task);
+
+      const start = dayjs(this.$constants.DEFAULT_DATE).startOf("day");
+      const end = dayjs(start).add(estimate.max, "minute");
       task.id = this.$accessor.task.lastTaskId + 1;
-      task.start = new Date();
-      task.end = new Date(task.start.getTime() + estimate.max * 60 * 1000);
+      task.start = start.toDate();
+      task.end = end.toDate();
       task.timed = true;
       task.color = "blue";
 
