@@ -4,7 +4,7 @@
       >Calendar Estimator</v-toolbar-title
     >
     <v-spacer></v-spacer>
-    <div v-if="$accessor.debug">
+    <div v-if="$accessor.debug.isDebug">
       <v-btn depressed @click="$router.push('/tasks')">Tasks</v-btn>
       <v-btn depressed @click="$router.push('/events')">Events</v-btn>
       <v-btn depressed @click="$router.push('/debug')">Debug</v-btn>
