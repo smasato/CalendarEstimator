@@ -16,6 +16,9 @@ export const getters = getterTree(state, {
 });
 
 export const mutations = mutationTree(state, {
+  setTasks(state, tasks: Array<Task>) {
+    state.tasks = tasks;
+  },
   addTask(state, task: Task) {
     state.tasks.push(task);
   },

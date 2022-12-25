@@ -16,6 +16,9 @@ export const getters = getterTree(state, {
 });
 
 export const mutations = mutationTree(state, {
+  setEvents(state, events: Array<Event>) {
+    state.events = events;
+  },
   addEvent(state, event: Event) {
     state.events.push(event);
   },
