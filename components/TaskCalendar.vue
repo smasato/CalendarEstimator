@@ -42,19 +42,30 @@ import { EstimateResult } from "~/plugins/estimate";
 import CalendarEventGradation from "~/components/CalendarEventGradation.vue";
 import TaskCalendarGradation from "~/components/TaskCalendarGradation.vue";
 
+export type DataType = {
+  value: string;
+  tasks: Task[];
+  tasksWithEstimateResult: TaskWithEstimateResult[];
+  dragEvent: any | null;
+  dragStart: any | null;
+  dragTime: any | null;
+  taskEstimateResult: object;
+};
+
 export default Vue.extend({
   components: { TaskCalendarGradation, CalendarEventGradation },
-  data: () => ({
-    value: dayjs().format("YYYY-MM-DD"),
-    tasks: [] as Task[],
-    tasksWithEstimateResult: [] as TaskWithEstimateResult[],
-    dragEvent: null as any,
-    dragStart: null as any,
-    dragTime: null as any,
-    createStart: null as any,
-    extendOriginal: null as any,
-    taskEstimateResult: {},
-  }),
+
+  data(): DataType {
+    return {
+      value: dayjs(this.$constants.DEFAULT_DATE).format("YYYY-MM-DD"),
+      tasks: [],
+      tasksWithEstimateResult: [],
+      dragEvent: null,
+      dragStart: null,
+      dragTime: null,
+      taskEstimateResult: [],
+    };
+  },
   mounted() {
     this.$store.watch(
       (state) => state.task.tasks,
@@ -82,7 +93,6 @@ export default Vue.extend({
       if (event && timed) {
         this.dragEvent = event;
         this.dragTime = null;
-        this.extendOriginal = null;
       }
     },
     toTime(tms) {
@@ -143,11 +153,8 @@ export default Vue.extend({
       }
       this.dragTime = null;
       this.dragEvent = null;
-      this.createStart = null;
-      this.extendOriginal = null;
     },
     cancelDrag() {
-      this.createStart = null;
       this.dragTime = null;
       this.dragEvent = null;
     },
@@ -163,7 +170,7 @@ export default Vue.extend({
       return task.color;
     },
     fetchEvents() {
-      const tasks = [] as Task[];
+      const tasks: Task[] = [];
 
       const startDay = dayjs(this.value).startOf("day");
       const endDay = dayjs(this.value).endOf("day");
@@ -180,7 +187,7 @@ export default Vue.extend({
       });
       this.tasks = tasks;
 
-      this.tasksWithEstimateResult = [] as TaskWithEstimateResult[];
+      this.tasksWithEstimateResult = [];
       this.tasks.forEach((task) => {
         this.tasksWithEstimateResult.push({
           ...task,

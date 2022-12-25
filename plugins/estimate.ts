@@ -25,8 +25,8 @@ const Z_SCORE = zScoreJStat();
 const NUM_SAMPLES = 10000;
 
 function zScoreJStat(): number {
-  const conf_level = 0.95;
-  return jStat.normal.inv(0.5 + conf_level / 2, 0, 1);
+  const CONF_LEVEL = 0.95;
+  return jStat.normal.inv(0.5 + CONF_LEVEL / 2, 0, 1);
 }
 
 function getMean(low: number, up: number): number {
@@ -59,7 +59,7 @@ function getSurpriseSample(surprises: Surprise[]): number {
     ) {
       const minuteRange = toMinutes(surprise.range, surprise.unit);
       const value = getSample(minuteRange);
-      if (surprise.eventType == "slower") sumMed += value;
+      if (surprise.eventType === "slower") sumMed += value;
       else sumMed -= value;
     }
   });

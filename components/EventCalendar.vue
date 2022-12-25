@@ -36,18 +36,31 @@ import dayjs from "dayjs";
 import { Event } from "~/types/event";
 import CalendarEventNormal from "~/components/CalendarEventNormal.vue";
 
+export type DataType = {
+  value: string;
+  events: Event[];
+  dragEvent: any | null;
+  dragStart: any | null;
+  dragTime: any | null;
+  createEvent: any | null;
+  createStart: any | null;
+  extendOriginal: any | null;
+};
+
 export default Vue.extend({
   components: { CalendarEventNormal },
-  data: () => ({
-    value: dayjs().format("YYYY-MM-DD"),
-    events: [] as Event[],
-    dragEvent: null as any,
-    dragStart: null as any,
-    dragTime: null as any,
-    createEvent: null as any,
-    createStart: null as any,
-    extendOriginal: null as any,
-  }),
+  data(): DataType {
+    return {
+      value: dayjs(this.$constants.DEFAULT_DATE).format("YYYY-MM-DD"),
+      events: [],
+      dragEvent: null,
+      dragStart: null,
+      dragTime: null,
+      createEvent: null,
+      createStart: null,
+      extendOriginal: null,
+    };
+  },
   mounted() {
     this.$store.watch(
       (state) => state.event.events,
