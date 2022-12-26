@@ -37,10 +37,6 @@ function getSD(low: number, up: number): number {
   return Math.exp((Math.log(up) - Math.log(low)) / Z_SCORE / 2);
 }
 
-function sumUp(total: number, num: number): number {
-  return total + num;
-}
-
 function getTaskSample(subTasks: Array<SubTask>): number {
   let sumMed = 0;
   subTasks.forEach(function (subTask) {
@@ -100,14 +96,21 @@ export type Histogram = {
 
 function getHistogram(samples: number[]): Histogram {
   const xMax = jStat.max(samples);
+  const xMaxRounded = Math.ceil(xMax / 5) * 5;
   const xMin = jStat.min(samples);
-  const bins = 1 + Math.floor(Math.log2(samples.length)); // Sturges' formula
-  const binWidth = (xMax - xMin) / bins;
+  const xMinRounded = Math.floor(xMin / 5) * 5;
+
+  const binWidth = 5;
+  const bins = Math.ceil((xMaxRounded - xMinRounded) / binWidth) + 1;
 
   const x: number[] = Array.from(Array(bins).keys()).map(
-    (i) => xMin + i * binWidth
+    (i) => xMinRounded + i * binWidth
   );
-  const y: number[] = jStat.histogram(samples, bins);
+  const y: number[] = Array.from(Array(bins).keys()).map(() => 0);
+  for (let i = samples.length - 1; i >= 0; i--) {
+    const bin = Math.floor((samples[i] - xMinRounded) / binWidth);
+    y[bin] += 1;
+  }
 
   return { x, y };
 }
@@ -127,23 +130,27 @@ function estimate(task: Task): EstimateResult {
   jStat.setRandom(Math.random);
 
   let maxVal = 0;
-  const samples: number[] = [];
+  let samples: number[] = [];
 
   for (let i = NUM_SAMPLES - 1; i >= 0; i--) {
     const newSample = Math.max(
-      getTaskSample(task.subTasks) + getSurpriseSample(task.surprises),
+      Math.round(
+        getTaskSample(task.subTasks) + getSurpriseSample(task.surprises)
+      ),
       0
     );
     samples.push(newSample);
     maxVal = maxVal < newSample ? newSample : maxVal;
   }
+  samples = samples.sort((a, b) => a - b);
+
   return {
-    mean: samples.reduce(sumUp) / NUM_SAMPLES,
+    mean: jStat.mean(samples),
     median: jStat.median(samples),
     max: jStat.max(samples),
     min: jStat.min(samples),
     sd: jStat.stdev(samples),
-    samples: samples.sort(),
+    samples,
     histogram: getHistogram(samples),
   };
 }
