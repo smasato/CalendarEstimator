@@ -34,6 +34,11 @@ export default VCalendar.extend({
         timed: true,
       };
 
+      const yMaxIndex = event.input.estimateResult.histogram.y.reduce(
+        (iMax, x, i, arr) => (x > arr[iMax] ? i : iMax),
+        0
+      );
+
       const percents: { xPercent; percent }[] = [];
       event.input.estimateResult.histogram.x.forEach((x, i) => {
         const y = event.input.estimateResult.histogram.y[i];
@@ -42,10 +47,14 @@ export default VCalendar.extend({
         );
         const xTop = day.timeToY(xDate);
         const xPercent = this.calcPercentPosition(xTop - top, height);
-        const percent = y / event.input.estimateResult.samples.length;
+        let percent;
+        if (i <= yMaxIndex) {
+          percent = 1;
+        } else {
+          percent = y / event.input.estimateResult.histogram.y[yMaxIndex];
+        }
         percents.push({ xPercent, percent });
       });
-      percents[0].percent = 1; // 度数分布表の最初の値は最小値の確率なので、1にする
 
       const linerColorStops: string[] = [];
       percents.forEach((p) => {

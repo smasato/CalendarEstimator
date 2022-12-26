@@ -96,19 +96,17 @@ export type Histogram = {
 
 function getHistogram(samples: number[]): Histogram {
   const xMax = jStat.max(samples);
-  const xMaxRounded = Math.ceil(xMax / 5) * 5;
   const xMin = jStat.min(samples);
-  const xMinRounded = Math.floor(xMin / 5) * 5;
 
   const binWidth = 5;
-  const bins = Math.ceil((xMaxRounded - xMinRounded) / binWidth) + 1;
+  const bins = Math.ceil((xMax - xMin) / binWidth) + 1;
 
   const x: number[] = Array.from(Array(bins).keys()).map(
-    (i) => xMinRounded + i * binWidth
+    (i) => xMin + i * binWidth
   );
   const y: number[] = Array.from(Array(bins).keys()).map(() => 0);
   for (let i = samples.length - 1; i >= 0; i--) {
-    const bin = Math.floor((samples[i] - xMinRounded) / binWidth);
+    const bin = Math.floor((samples[i] - xMin) / binWidth);
     y[bin] += 1;
   }
 
@@ -134,9 +132,9 @@ function estimate(task: Task): EstimateResult {
 
   for (let i = NUM_SAMPLES - 1; i >= 0; i--) {
     const newSample = Math.max(
-      Math.round(
-        getTaskSample(task.subTasks) + getSurpriseSample(task.surprises)
-      ),
+      Math.ceil(
+        (getTaskSample(task.subTasks) + getSurpriseSample(task.surprises)) / 5
+      ) * 5,
       0
     );
     samples.push(newSample);
