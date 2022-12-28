@@ -1,7 +1,7 @@
 <template>
   <v-container fluid style="height: 89vh">
     <v-sheet width="50%" height="100%" class="overflow-y-auto">
-      <TaskCalendarGradation
+      <TaskCalendarEventTypeA
         ref="calendar"
         v-model="value"
         :event-color="getEventColor"
@@ -29,7 +29,7 @@
           >
           </CalendarEventGradation>
         </template>
-      </TaskCalendarGradation>
+      </TaskCalendarEventTypeA>
     </v-sheet>
   </v-container>
 </template>
@@ -40,7 +40,7 @@ import dayjs from "dayjs";
 import { Task, TaskWithEstimateResult } from "~/types/task";
 import { EstimateResult } from "~/plugins/estimate";
 import CalendarEventGradation from "~/components/CalendarEventGradation.vue";
-import TaskCalendarGradation from "~/components/TaskCalendarGradation.vue";
+import TaskCalendarEventTypeA from "~/components/TaskCalendarEventTypeA.vue";
 
 export type DataType = {
   value: string;
@@ -53,7 +53,7 @@ export type DataType = {
 };
 
 export default Vue.extend({
-  components: { TaskCalendarGradation, CalendarEventGradation },
+  components: { TaskCalendarEventTypeA, CalendarEventGradation },
 
   data(): DataType {
     return {

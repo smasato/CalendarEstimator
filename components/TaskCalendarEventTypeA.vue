@@ -8,7 +8,9 @@ import {
 } from "vuetify/lib/components/VCalendar/util/timestamp";
 import dayjs from "dayjs";
 
+// 先行研究のドットプロットにおける確率の表示方法を参考にした
 export default VCalendar.extend({
+  name: "TaskCalendarEventTypeA",
   methods: {
     genTimedEvent({ event, left, width }, day) {
       if (
@@ -47,16 +49,11 @@ export default VCalendar.extend({
         );
         const xTop = day.timeToY(xDate);
         const xPercent = this.calcPercentPosition(xTop - top, height);
-        let percent;
-        if (i <= yMaxIndex) {
-          percent = 1;
-        } else {
-          percent = y / event.input.estimateResult.histogram.y[yMaxIndex];
-        }
+        const percent = y / event.input.estimateResult.histogram.y[yMaxIndex];
         percents.push({ xPercent, percent });
       });
 
-      const linerColorStops: string[] = [];
+      const linerColorStops: string[] = ["rgb(33 150 243 / 0) 0%"];
       percents.forEach((p) => {
         linerColorStops.push(`rgb(33 150 243 / ${p.percent}) ${p.xPercent}%`);
       });
@@ -73,6 +70,7 @@ export default VCalendar.extend({
           left: `${left}%`,
           width: `${width}%`,
           background: `${linearGradient} !important`,
+          borderColor: "gray !important",
         },
       });
     },
