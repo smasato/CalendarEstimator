@@ -8,15 +8,9 @@ import {
 } from "vuetify/lib/components/VCalendar/util/timestamp";
 import dayjs from "dayjs";
 
-// 先行研究のドットプロットにおける確率の表示方法を参考にした
+// y[0]からy[i]までの合計値から割合を計算する
 export default VCalendar.extend({
-  name: "TaskCalendarEventTypeA",
-  props: {
-    eventTextColor: {
-      type: String,
-      default: "black",
-    },
-  },
+  name: "TaskCalendarEventTypeB",
   methods: {
     genTimedEvent({ event, left, width }, day) {
       if (
@@ -55,11 +49,17 @@ export default VCalendar.extend({
         );
         const xTop = day.timeToY(xDate);
         const xPercent = this.calcPercentPosition(xTop - top, height);
-        const percent = y / event.input.estimateResult.histogram.y[yMaxIndex];
+        let ySum = 0;
+        for (let j = 0; j <= i; j++) {
+          ySum += event.input.estimateResult.histogram.y[j];
+        }
+        const percent =
+          (event.input.estimateResult.samples.length - ySum) /
+          event.input.estimateResult.samples.length;
         percents.push({ xPercent, percent });
       });
 
-      const linerColorStops: string[] = ["rgb(33 150 243 / 0) 0%"];
+      const linerColorStops: string[] = ["rgb(33 150 243 / 1) 0%"];
       percents.forEach((p) => {
         linerColorStops.push(`rgb(33 150 243 / ${p.percent}) ${p.xPercent}%`);
       });
@@ -76,7 +76,6 @@ export default VCalendar.extend({
           left: `${left}%`,
           width: `${width}%`,
           background: `${linearGradient} !important`,
-          borderColor: "gray !important",
         },
       });
     },

@@ -42,7 +42,6 @@ export default Vue.extend({
 <style scoped lang="scss">
 .v-event-draggable {
   padding-left: 6px;
-  color: black;
 }
 
 .v-event-timed {
