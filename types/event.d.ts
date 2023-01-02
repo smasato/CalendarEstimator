@@ -5,4 +5,6 @@ export type Event = {
   end: Date;
   color: string;
   timed: boolean;
+  fixed: boolean;
+  type: string;
 };
