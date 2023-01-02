@@ -80,6 +80,7 @@ export default Vue.extend({
       return this.tasks.map((task, index) => {
         return {
           ...task,
+          // @ts-ignore
           estimateResult: this.taskEstimate(index),
         };
       });
