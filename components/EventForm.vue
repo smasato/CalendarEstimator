@@ -85,6 +85,8 @@ export default Vue.extend({
         start: start.toDate(),
         end: end.toDate(),
         timed: true,
+        fixed: false,
+        type: "normal",
         color:
           this.$constants.CALENDAR_COLORS[
             (this.$accessor.event.lastEventId + 1) %

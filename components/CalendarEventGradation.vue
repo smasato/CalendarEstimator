@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="event.type === 'task'">
     <div class="v-event-draggable">
       <div class="v-event-summary">
         <strong>{{ event.name }}</strong
@@ -9,6 +9,11 @@
       </div>
     </div>
     <div v-if="event.timed" class="v-event-drag-bottom"></div>
+  </div>
+  <div v-else>
+    <div class="v-event-draggable">
+      <component :is="{ render: eventSummary }"></component>
+    </div>
   </div>
 </template>
 
@@ -28,8 +33,12 @@ export default Vue.extend({
       type: Function,
       required: true,
     },
+    eventSummary: {
+      type: Function,
+      required: true,
+    },
     estimateResult: {
-      type: Object as () => EstimateResult,
+      type: Object as () => EstimateResult | null,
       required: true,
     },
   },

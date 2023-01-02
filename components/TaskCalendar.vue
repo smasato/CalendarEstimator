@@ -6,7 +6,7 @@
         v-model="value"
         :event-color="getEventColor"
         :event-ripple="false"
-        :events="tasksWithEstimateResult"
+        :events="events"
         :hide-header="true"
         :interval-count="(24 * 60) / 15"
         color="primary"
@@ -20,12 +20,13 @@
         @mouseup:time="endDrag"
         @mouseleave.native="cancelDrag"
       >
-        <template #event="{ event, timed, timeSummary }">
+        <template #event="{ event, timed, timeSummary, eventSummary }">
           <CalendarEventGradation
             :time-summary="timeSummary"
+            :event-summary="eventSummary"
             :timed="timed"
             :event="event"
-            :estimate-result="taskEstimate(event)"
+            :estimate-result="event.estimateResult"
           >
           </CalendarEventGradation>
         </template>
@@ -38,58 +39,84 @@
 import Vue from "vue";
 import dayjs from "dayjs";
 import { Task, TaskWithEstimateResult } from "~/types/task";
-import { EstimateResult } from "~/plugins/estimate";
+import { Event } from "~/types/event";
 import CalendarEventGradation from "~/components/CalendarEventGradation.vue";
 import TaskCalendarEventTypeB from "~/components/TaskCalendarEventTypeB.vue";
 
 export type DataType = {
   value: string;
   tasks: Task[];
-  tasksWithEstimateResult: TaskWithEstimateResult[];
+  events: any[];
   dragEvent: any | null;
   dragStart: any | null;
   dragTime: any | null;
-  taskEstimateResult: object;
 };
 
 export default Vue.extend({
-  components: { TaskCalendarEventTypeB, CalendarEventGradation },
+  components: {
+    TaskCalendarEventTypeB,
+    CalendarEventGradation,
+  },
 
-  data(): DataType {
+  data: (): DataType => {
     return {
-      value: dayjs(this.$constants.DEFAULT_DATE).format("YYYY-MM-DD"),
-      tasks: [],
-      tasksWithEstimateResult: [],
+      value: "",
+      tasks: [] as Task[],
+      events: [] as any[],
       dragEvent: null,
       dragStart: null,
       dragTime: null,
-      taskEstimateResult: [],
     };
   },
+  computed: {
+    taskEstimate: function () {
+      return (taskIdx: number) => {
+        const task = this.tasks[taskIdx];
+        const estimateResult = this.$estimate.estimate(task);
+        return estimateResult;
+      };
+    },
+    tasksWithEstimateResult: function () {
+      return this.tasks.map((task, index) => {
+        return {
+          ...task,
+          // @ts-ignore
+          estimateResult: this.taskEstimate(index),
+        };
+      });
+    },
+  },
   mounted() {
+    this.value = dayjs(this.$constants.DEFAULT_DATE).format("YYYY-MM-DD");
     this.$store.watch(
       (state) => state.task.tasks,
       (tasks) => {
         this.tasks = tasks;
-        this.tasksWithEstimateResult = tasks.map((task) => {
-          return {
-            ...task,
-            estimateResult: this.taskEstimate(task),
-          };
-        });
+        this.updateEvents();
       }
     );
   },
   methods: {
-    taskEstimate(task: Task) {
-      if (this.taskEstimateResult[task.id]) {
-        return this.taskEstimateResult[task.id];
-      } else {
-        this.taskEstimateResult[task.id] = this.estimate(task);
-        return this.estimate(task);
-      }
+    updateEvents() {
+      const event: Event & { estimateResult: Object } = {
+        id: -1,
+        name: "Fixed Event",
+        start: dayjs(this.$constants.DEFAULT_DATE).toDate(),
+        end: dayjs(this.$constants.DEFAULT_DATE).add(10, "minute").toDate(),
+        timed: true,
+        fixed: true,
+        type: "normal",
+        color: "green",
+        estimateResult: {},
+      };
+      const events: (TaskWithEstimateResult | Event)[] =
+        this.tasksWithEstimateResult;
+      events.push(event);
+      this.events = events;
     },
     startDrag({ event, timed }) {
+      if (event.fixed === true) return;
+
       if (event && timed) {
         this.dragEvent = event;
         this.dragTime = null;
@@ -186,17 +213,7 @@ export default Vue.extend({
         }
       });
       this.tasks = tasks;
-
-      this.tasksWithEstimateResult = [];
-      this.tasks.forEach((task) => {
-        this.tasksWithEstimateResult.push({
-          ...task,
-          estimateResult: this.taskEstimate(task) as EstimateResult,
-        });
-      });
-    },
-    estimate(task: Task) {
-      return this.$estimate.estimate(task);
+      this.updateEvents();
     },
   },
 });

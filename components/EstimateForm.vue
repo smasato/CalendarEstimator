@@ -94,6 +94,8 @@ export default Vue.extend({
       task.end = end.toDate();
       task.timed = true;
       task.color = "blue";
+      task.fixed = false;
+      task.type = "task";
 
       this.$accessor.task.addTask(task);
       this.resetTask();
