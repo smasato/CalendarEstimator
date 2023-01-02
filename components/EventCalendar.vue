@@ -49,9 +49,9 @@ export type DataType = {
 
 export default Vue.extend({
   components: { CalendarEventNormal },
-  data(): DataType {
+  data: (): DataType => {
     return {
-      value: dayjs(this.$constants.DEFAULT_DATE).format("YYYY-MM-DD"),
+      value: "",
       events: [],
       dragEvent: null,
       dragStart: null,
@@ -62,6 +62,7 @@ export default Vue.extend({
     };
   },
   mounted() {
+    this.value = dayjs(this.$constants.DEFAULT_DATE).format("YYYY-MM-DD");
     this.$store.watch(
       (state) => state.event.events,
       (events) => {
@@ -71,6 +72,8 @@ export default Vue.extend({
   },
   methods: {
     startDrag({ event, timed }) {
+      if (event.fixed) return;
+
       if (event && timed) {
         this.dragEvent = event;
         this.dragTime = null;
@@ -96,6 +99,8 @@ export default Vue.extend({
       }
     },
     extendBottom(event) {
+      if (event.fixed === true) return;
+
       this.createEvent = event;
       this.createStart = event.start;
       this.extendOriginal = event.end;
