@@ -8,9 +8,15 @@ import {
 import dayjs from "dayjs";
 import TaskCalendarEventBase from "./TaskCalendarEventBase";
 
-// 先行研究のドットプロットにおける確率の表示方法を参考にした
+// y[0]からy[i]までの合計値から割合を計算する
 export default TaskCalendarEventBase.extend({
-  name: "TaskCalendarEventTypeA",
+  name: "TaskCalendarEventTypeB2",
+  props: {
+    eventTextColor: {
+      type: String,
+      default: "white",
+    },
+  },
   methods: {
     genTimedEvent({ event, left, width }, day) {
       if (event.input.type === "normal") {
@@ -39,24 +45,24 @@ export default TaskCalendarEventBase.extend({
         timed: true,
       };
 
-      const yMaxIndex = event.input.estimateResult.histogram.y.reduce(
-        (iMax, x, i, arr) => (x > arr[iMax] ? i : iMax),
-        0
-      );
-
       const percents: { xPercent; percent }[] = [];
       event.input.estimateResult.histogram.x.forEach((x, i) => {
-        const y = event.input.estimateResult.histogram.y[i];
         const xDate = parseDate(
           dayjs(event.input.start).add(x, "minute").toDate()
         );
         const xTop = day.timeToY(xDate);
         const xPercent = this.calcPercentPosition(xTop - top, height);
-        const percent = y / event.input.estimateResult.histogram.y[yMaxIndex];
+        let ySum = 0;
+        for (let j = 0; j <= i; j++) {
+          ySum += event.input.estimateResult.histogram.y[j];
+        }
+        const percent =
+          (event.input.estimateResult.samples.length - ySum) /
+          event.input.estimateResult.samples.length;
         percents.push({ xPercent, percent });
       });
 
-      const linerColorStops: string[] = ["rgb(33 150 243 / 0) 0%"];
+      const linerColorStops: string[] = ["rgb(33 150 243 / 1) 0%"];
       percents.forEach((p) => {
         linerColorStops.push(`rgb(33 150 243 / ${p.percent}) ${p.xPercent}%`);
       });
@@ -68,13 +74,12 @@ export default TaskCalendarEventBase.extend({
       return this.genEvent(event, scope, true, {
         staticClass: "v-event-timed",
         style: {
-          border: "none !important",
+          borderColor: "black !important",
           top: `${top}px`,
           height: `${height}px`,
           left: `${left}%`,
           width: `${width}%`,
           background: `${linearGradient} !important`,
-          borderColor: "gray !important",
         },
       });
     },

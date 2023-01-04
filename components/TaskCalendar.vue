@@ -1,8 +1,8 @@
 <template>
   <v-container fluid style="height: 89vh">
     <v-sheet width="50%" height="100%" class="overflow-y-auto">
-      <TaskCalendarEventTypeA
-        v-if="type === 'A'"
+      <component
+        :is="eventTypeComponent"
         ref="calendar"
         v-model="value"
         :event-color="getEventColor"
@@ -31,69 +31,7 @@
           >
           </CalendarEventGradation>
         </template>
-      </TaskCalendarEventTypeA>
-      <TaskCalendarEventTypeB
-        v-else-if="type === 'B'"
-        ref="calendar"
-        v-model="value"
-        :event-color="getEventColor"
-        :event-ripple="false"
-        :events="events"
-        :hide-header="true"
-        :interval-count="(24 * 60) / 15"
-        color="primary"
-        first-interval="0"
-        interval-minutes="15"
-        type="day"
-        @change="fetchEvents"
-        @mousedown:event="startDrag"
-        @mousedown:time="startTime"
-        @mousemove:time="mouseMove"
-        @mouseup:time="endDrag"
-        @mouseleave.native="cancelDrag"
-      >
-        <template #event="{ event, timed, timeSummary, eventSummary }">
-          <CalendarEventGradation
-            :time-summary="timeSummary"
-            :event-summary="eventSummary"
-            :timed="timed"
-            :event="event"
-            :estimate-result="event.estimateResult"
-          >
-          </CalendarEventGradation>
-        </template>
-      </TaskCalendarEventTypeB>
-      <TaskCalendarEventTypeC
-        v-else-if="type === 'C'"
-        ref="calendar"
-        v-model="value"
-        :event-color="getEventColor"
-        :event-ripple="false"
-        :events="events"
-        :hide-header="true"
-        :interval-count="(24 * 60) / 15"
-        color="primary"
-        first-interval="0"
-        interval-minutes="15"
-        type="day"
-        @change="fetchEvents"
-        @mousedown:event="startDrag"
-        @mousedown:time="startTime"
-        @mousemove:time="mouseMove"
-        @mouseup:time="endDrag"
-        @mouseleave.native="cancelDrag"
-      >
-        <template #event="{ event, timed, timeSummary, eventSummary }">
-          <CalendarEventGradation
-            :time-summary="timeSummary"
-            :event-summary="eventSummary"
-            :timed="timed"
-            :event="event"
-            :estimate-result="event.estimateResult"
-          >
-          </CalendarEventGradation>
-        </template>
-      </TaskCalendarEventTypeC>
+      </component>
     </v-sheet>
   </v-container>
 </template>
@@ -104,9 +42,6 @@ import dayjs from "dayjs";
 import { Task, TaskWithEstimateResult } from "~/types/task";
 import { Event } from "~/types/event";
 import CalendarEventGradation from "~/components/CalendarEventGradation.vue";
-import TaskCalendarEventTypeA from "~/components/TaskCalendarEventTypeA.vue";
-import TaskCalendarEventTypeB from "~/components/TaskCalendarEventTypeB.vue";
-import TaskCalendarEventTypeC from "~/components/TaskCalendarEventTypeC.vue";
 
 export type DataType = {
   value: string;
@@ -120,16 +55,13 @@ export type DataType = {
 
 export default Vue.extend({
   components: {
-    TaskCalendarEventTypeA,
-    TaskCalendarEventTypeB,
-    TaskCalendarEventTypeC,
     CalendarEventGradation,
   },
 
   data: (): DataType => {
     return {
       value: "",
-      type: "A",
+      type: "A1",
       tasks: [] as Task[],
       events: [] as any[],
       dragEvent: null,
@@ -153,6 +85,9 @@ export default Vue.extend({
           estimateResult: this.taskEstimate(index),
         };
       });
+    },
+    eventTypeComponent: function () {
+      return "TaskCalendarEventType" + this.type;
     },
   },
   mounted() {

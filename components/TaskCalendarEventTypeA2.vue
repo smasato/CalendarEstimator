@@ -8,14 +8,9 @@ import {
 import dayjs from "dayjs";
 import TaskCalendarEventBase from "./TaskCalendarEventBase";
 
+// 先行研究のドットプロットにおける確率の表示方法を参考にした
 export default TaskCalendarEventBase.extend({
-  name: "TaskCalendarEventTypeC",
-  props: {
-    eventTextColor: {
-      type: String,
-      default: "white",
-    },
-  },
+  name: "TaskCalendarEventTypeA2",
   methods: {
     genTimedEvent({ event, left, width }, day) {
       if (event.input.type === "normal") {
@@ -44,27 +39,24 @@ export default TaskCalendarEventBase.extend({
         timed: true,
       };
 
+      const yMaxIndex = event.input.estimateResult.histogram.y.reduce(
+        (iMax, x, i, arr) => (x > arr[iMax] ? i : iMax),
+        0
+      );
+
       const percents: { xPercent; percent }[] = [];
       event.input.estimateResult.histogram.x.forEach((x, i) => {
+        const y = event.input.estimateResult.histogram.y[i];
         const xDate = parseDate(
           dayjs(event.input.start).add(x, "minute").toDate()
         );
         const xTop = day.timeToY(xDate);
         const xPercent = this.calcPercentPosition(xTop - top, height);
-        const percent =
-          event.input.estimateResult.histogram.y[i] /
-          event.input.estimateResult.samples.length;
+        const percent = y / event.input.estimateResult.histogram.y[yMaxIndex];
         percents.push({ xPercent, percent });
       });
-      const yMaxIndex = event.input.estimateResult.histogram.y.indexOf(
-        Math.max(...event.input.estimateResult.histogram.y)
-      );
-      const adjust = 1 - percents[yMaxIndex].percent;
-      percents.forEach((p) => {
-        p.percent += adjust;
-      });
 
-      const linerColorStops: string[] = [];
+      const linerColorStops: string[] = ["rgb(33 150 243 / 0) 0%"];
       percents.forEach((p) => {
         linerColorStops.push(`rgb(33 150 243 / ${p.percent}) ${p.xPercent}%`);
       });
