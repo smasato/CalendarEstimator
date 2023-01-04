@@ -10,7 +10,7 @@ import TaskCalendarEventBase from "./TaskCalendarEventBase";
 
 // 先行研究のドットプロットにおける確率の表示方法を参考にした
 export default TaskCalendarEventBase.extend({
-  name: "TaskCalendarEventTypeA",
+  name: "TaskCalendarEventTypeA1",
   methods: {
     genTimedEvent({ event, left, width }, day) {
       if (event.input.type === "normal") {

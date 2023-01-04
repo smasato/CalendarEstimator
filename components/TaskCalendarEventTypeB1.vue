@@ -10,7 +10,7 @@ import TaskCalendarEventBase from "./TaskCalendarEventBase";
 
 // y[0]からy[i]までの合計値から割合を計算する
 export default TaskCalendarEventBase.extend({
-  name: "TaskCalendarEventTypeB",
+  name: "TaskCalendarEventTypeB1",
   props: {
     eventTextColor: {
       type: String,
