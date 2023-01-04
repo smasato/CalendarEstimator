@@ -74,6 +74,7 @@ export default TaskCalendarEventBase.extend({
       return this.genEvent(event, scope, true, {
         staticClass: "v-event-timed",
         style: {
+          border: "none !important",
           top: `${top}px`,
           height: `${height}px`,
           left: `${left}%`,
