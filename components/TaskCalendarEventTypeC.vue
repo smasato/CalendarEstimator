@@ -8,9 +8,8 @@ import {
 import dayjs from "dayjs";
 import TaskCalendarEventBase from "./TaskCalendarEventBase";
 
-// 先行研究のドットプロットにおける確率の表示方法を参考にした
 export default TaskCalendarEventBase.extend({
-  name: "TaskCalendarEventTypeA",
+  name: "TaskCalendarEventTypeC",
   methods: {
     genTimedEvent({ event, left, width }, day) {
       if (event.input.type === "normal") {
@@ -39,20 +38,18 @@ export default TaskCalendarEventBase.extend({
         timed: true,
       };
 
-      const yMaxIndex = event.input.estimateResult.histogram.y.reduce(
-        (iMax, x, i, arr) => (x > arr[iMax] ? i : iMax),
-        0
-      );
-
       const percents: { xPercent; percent }[] = [];
       event.input.estimateResult.histogram.x.forEach((x, i) => {
-        const y = event.input.estimateResult.histogram.y[i];
         const xDate = parseDate(
           dayjs(event.input.start).add(x, "minute").toDate()
         );
         const xTop = day.timeToY(xDate);
         const xPercent = this.calcPercentPosition(xTop - top, height);
-        const percent = y / event.input.estimateResult.histogram.y[yMaxIndex];
+        const percent =
+          (event.input.estimateResult.histogram.y[i] /
+            event.input.estimateResult.samples.length) *
+            2 +
+          0.0;
         percents.push({ xPercent, percent });
       });
 
@@ -68,13 +65,11 @@ export default TaskCalendarEventBase.extend({
       return this.genEvent(event, scope, true, {
         staticClass: "v-event-timed",
         style: {
-          border: "none !important",
           top: `${top}px`,
           height: `${height}px`,
           left: `${left}%`,
           width: `${width}%`,
           background: `${linearGradient} !important`,
-          borderColor: "gray !important",
         },
       });
     },
