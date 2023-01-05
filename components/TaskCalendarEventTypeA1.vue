@@ -63,17 +63,18 @@ export default TaskCalendarEventBase.extend({
       const linearGradient = `linear-gradient(to bottom, ${linerColorStops.join(
         ", "
       )})`;
+      const backGroundColor = "rgb(241 241 241 / 1)";
 
       // @ts-ignore
       return this.genEvent(event, scope, true, {
         staticClass: "v-event-timed",
         style: {
-          border: "none !important",
+          border: "transparent !important",
           top: `${top}px`,
           height: `${height}px`,
           left: `${left}%`,
           width: `${width}%`,
-          background: `${linearGradient} !important`,
+          background: `${linearGradient}, ${backGroundColor} !important`,
         },
       });
     },
