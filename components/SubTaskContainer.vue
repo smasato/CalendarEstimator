@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col>
-        <div class="text-h5">1. Break the task down into steps</div>
+        <div class="text-h5">1. タスクをステップに分解する</div>
       </v-col>
     </v-row>
     <v-row v-for="(subTask, index) in subTasks" :key="index" align="baseline">
@@ -12,15 +12,13 @@
       <v-col cols="4">
         <v-text-field
           v-model="subTask.name"
-          label="Name (Optional)"
+          label="サブタスク名"
+          disabled
           hide-details
         ></v-text-field>
       </v-col>
       <v-col cols="6">
         <v-row align="baseline">
-          <v-col cols="auto">
-            <span class="mr-1">from</span>
-          </v-col>
           <v-col cols="2">
             <v-text-field
               v-model="subTask.range[0]"
@@ -32,7 +30,7 @@
             ></v-text-field>
           </v-col>
           <v-col cols="auto">
-            <span class="mr-1">to</span>
+            <span class="mr-1">から</span>
           </v-col>
           <v-col cols="2">
             <v-text-field
@@ -48,18 +46,10 @@
             <v-select
               v-model="subTask.unit"
               hide-details
+              disabled
               :items="units"
             ></v-select>
           </v-col>
-        </v-row>
-      </v-col>
-
-      <v-spacer></v-spacer>
-
-      <v-col cols="1">
-        <v-row>
-          <v-btn x-small @click="insertSubTask(index)">+</v-btn>
-          <v-btn x-small @click="removeSubTask(index)">X</v-btn>
         </v-row>
       </v-col>
     </v-row>
@@ -78,26 +68,22 @@ export default Vue.extend({
     },
   },
   data() {
-    return {
-      units: [] as string[],
-    };
+    return {};
   },
-  mounted() {
-    this.units = this.$constants.UNITS;
+  computed: {
+    units() {
+      const units = [] as { text: string; value: string }[];
+      const unitsJa = ["分", "時間", "日"];
+      this.subTasks.forEach((subTask, index) => {
+        units.push({
+          text: unitsJa[index],
+          value: subTask.unit,
+        });
+      });
+      return units;
+    },
   },
   methods: {
-    insertSubTask(index: number) {
-      this.subTasks.splice(index + 1, 0, {
-        name: "",
-        range: [0, 10],
-        unit: "minute(s)",
-      });
-    },
-    removeSubTask(index: number) {
-      if (this.subTasks.length > 1) {
-        this.subTasks.splice(index, 1);
-      }
-    },
     updatedRangeUpper(index: number, event: any) {
       const temp = Number(event);
       if (this.subTasks[index].range[0] > temp) {
