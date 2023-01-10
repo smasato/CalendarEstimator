@@ -3,12 +3,13 @@
     <v-row>
       <v-col>
         <div class="text-h5">
-          2. Consider surprise events which could slow you down or speed you up
+          2.
+          所要時間が遅くなったり、速くなったりするようなサプライズイベントを考慮する
         </div>
       </v-col>
     </v-row>
-    <v-row v-for="(surprise, index) in surprises" v-bind:key="index">
-      <v-col cols="11">
+    <v-row v-for="(surprise, index) in surprises" :key="index">
+      <v-col cols="12">
         <v-row align="baseline">
           <v-col cols="auto">
             <span>{{ index + 1 }}.</span>
@@ -17,92 +18,87 @@
           <v-col cols="4">
             <v-text-field
               v-model="surprise.name"
-              label="Name (Optional)"
+              label="サプライズイベント名"
+              disabled
               hide-details
             ></v-text-field>
           </v-col>
 
-          <v-col cols="3" class="flex-shrink-0 flex-grow-1">
+          <v-col cols="auto">
             <v-row align="baseline">
-              <v-col cols="3" class="flex-shrink-1 flex-grow-0">
-                <p>from</p>
-              </v-col>
-              <v-col cols="3" class="flex-shrink-0 flex-grow-1">
+              <v-col cols="auto">
                 <v-text-field
+                  v-model="surprise.range[0]"
                   dense
                   min="0"
                   :max="surprise.range[1]"
-                  v-model="surprise.range[0]"
                   type="number"
                   hide-details
                 ></v-text-field>
               </v-col>
-              <v-col cols="2" class="flex-shrink-1 flex-grow-0">
-                <p>to</p>
+              <v-col cols="auto">
+                <p>から</p>
               </v-col>
-              <v-col cols="3" class="flex-shrink-0 flex-grow-1">
+              <v-col cols="auto">
                 <v-text-field
+                  v-model="surprise.range[1]"
                   dense
                   min="0"
                   max="200"
-                  v-model="surprise.range[1]"
                   type="number"
-                  v-on:input="updatedRangeUpper(index, $event)"
                   hide-details
+                  @input="updatedRangeUpper(index, $event)"
                 ></v-text-field>
               </v-col>
             </v-row>
           </v-col>
-          <v-col cols="2" class="flex-shrink-1 flex-grow-0">
+          <v-col cols="auto">
             <v-select
-              hide-details
               v-model="surprise.unit"
+              hide-details
+              disabled
               :items="units"
             ></v-select>
           </v-col>
-          <v-col cols="2" class="flex-shrink-1 flex-grow-0">
+          <v-col cols="2">
             <v-select
-              hide-details
               v-model="surprise.eventType"
+              hide-details
+              disabled
               :items="eventTypes"
             ></v-select
           ></v-col>
         </v-row>
         <v-row align="baseline" class="mt-n4">
           <v-col cols="auto">
-            <span>it happens</span>
-          </v-col>
-          <v-col cols="auto">
             <v-text-field
-              dense
-              hide-details
-              type="number"
-              min="0"
-              max="1000"
-              v-model="surprise.probability[0]"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="auto">
-            <span>time(s) out of</span>
-          </v-col>
-
-          <v-col cols="auto">
-            <v-text-field
+              v-model="surprise.probability[1]"
               dense
               hide-details
               type="number"
               min="1"
               max="1000"
-              v-model="surprise.probability[1]"
             ></v-text-field>
           </v-col>
-          <v-spacer></v-spacer>
-        </v-row>
-      </v-col>
-      <v-col cols="auto">
-        <v-row>
-          <v-btn x-small @click="insertSurprise(index)">+</v-btn>
-          <v-btn x-small @click="removeSurprises(index)">X</v-btn>
+
+          <v-col cols="auto">
+            <span>回のうち</span>
+          </v-col>
+
+          <v-col cols="auto">
+            <v-text-field
+              v-model="surprise.probability[0]"
+              dense
+              hide-details
+              type="number"
+              min="0"
+              max="1000"
+            ></v-text-field>
+          </v-col>
+
+          <v-col cols="auto">
+            <span>回 起こります</span>
+          </v-col>
         </v-row>
       </v-col>
     </v-row>
@@ -120,37 +116,40 @@ export default Vue.extend({
       required: true,
     },
   },
-  data() {
-    return {
-      units: [] as string[],
-      eventTypes: [] as string[],
-    };
+  computed: {
+    units() {
+      const units = [] as { text: string; value: string }[];
+      const unitsJa = ["分", "時間", "日"];
+      this.$constants.UNITS.forEach((unit, index) => {
+        units.push({
+          text: unitsJa[index],
+          value: unit,
+        });
+      });
+      return units;
+    },
+    eventTypes() {
+      const eventTypes = [] as { text: string; value: string }[];
+      const eventTypesJa = ["遅くなる", "速くなる"];
+      this.$constants.EVENT_TYPES.forEach((eventType, index) => {
+        eventTypes.push({
+          text: eventTypesJa[index],
+          value: eventType,
+        });
+      });
+      return eventTypes;
+    },
+  },
+  mounted() {
+    this.eventTypes = this.$constants.EVENT_TYPES;
   },
   methods: {
-    insertSurprise(index: number) {
-      this.surprises.splice(index + 1, 0, {
-        name: "",
-        range: [0, 10],
-        unit: "minute(s)",
-        eventType: "slower",
-        probability: [0, 1],
-      } as Surprise);
-    },
-    removeSurprises(index: number) {
-      if (this.surprises.length > 1) {
-        this.surprises.splice(index, 1);
-      }
-    },
     updatedRangeUpper(index: number, event: any) {
       const temp = Number(event);
       if (this.surprises[index].range[0] > temp) {
         this.surprises[index].range[0] = temp;
       }
     },
-  },
-  mounted() {
-    this.units = this.$constants.UNITS;
-    this.eventTypes = this.$constants.EVENT_TYPES;
   },
 });
 </script>

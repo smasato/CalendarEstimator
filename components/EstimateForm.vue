@@ -15,7 +15,8 @@
             <v-text-field
               v-model="task.name"
               hide-details
-              label="Name (Optional)"
+              label="Name"
+              disabled
             ></v-text-field>
           </v-col>
         </v-row>
@@ -27,7 +28,7 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-btn @click="addTask">Create Task</v-btn>
+            <v-btn @click="addTask">OK</v-btn>
           </v-col>
         </v-row>
       </v-container>
