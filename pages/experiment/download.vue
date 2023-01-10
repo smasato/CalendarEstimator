@@ -111,6 +111,8 @@ export default Vue.extend({
       };
       this.$accessor.event.resetEvents();
       this.$accessor.task.resetTasks();
+
+      this.$router.push("/experiment/start");
     },
   },
 });
