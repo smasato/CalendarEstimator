@@ -28,6 +28,15 @@
                 </div>
               </v-col>
             </v-row>
+            <v-row>
+              <v-col align="center">
+                <div @click="$router.push('/experiment/start')">
+                  <v-btn x-large rounded>
+                    実験開始 <v-icon small>mdi-chevron-right</v-icon>
+                  </v-btn>
+                </div>
+              </v-col>
+            </v-row>
           </v-col>
           <v-col cols="9">
             <EventCalendar v-if="mode === 'normal'" />
