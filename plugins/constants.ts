@@ -1,9 +1,15 @@
 import { Plugin } from "@nuxt/types";
-import dayjs from "dayjs";
 import { Task } from "~/types/task";
 
-const UNITS = ["minute(s)", "hour(s)", "day(s)"];
-const EVENT_TYPES = ["slower", "faster"];
+const UNITS = [
+  { value: "minute(s)", text: "分" },
+  { value: "hour(s)", text: "時間" },
+  { value: "day(s)", text: "日" },
+];
+const EVENT_TYPES = [
+  { value: "slower", text: "遅くなる" },
+  { value: "faster", text: "早くなる" },
+];
 const CALENDAR_COLORS = [
   "blue",
   "indigo",
@@ -91,8 +97,8 @@ const EXAMPLE_1 = {
 } as Task;
 
 export interface ConstantsPluginInterface {
-  readonly UNITS: Array<string>;
-  readonly EVENT_TYPES: Array<string>;
+  readonly UNITS: Array<{ value: string; text: string }>;
+  readonly EVENT_TYPES: Array<{ value: string; text: string }>;
   readonly EXAMPLE_1: Task;
   readonly CALENDAR_COLORS: Array<string>;
   readonly DEFAULT_DATE: string;

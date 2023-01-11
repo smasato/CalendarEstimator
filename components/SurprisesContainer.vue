@@ -116,32 +116,14 @@ export default Vue.extend({
       required: true,
     },
   },
+
   computed: {
     units() {
-      const units = [] as { text: string; value: string }[];
-      const unitsJa = ["分", "時間", "日"];
-      this.$constants.UNITS.forEach((unit, index) => {
-        units.push({
-          text: unitsJa[index],
-          value: unit,
-        });
-      });
-      return units;
+      return this.$constants.UNITS;
     },
     eventTypes() {
-      const eventTypes = [] as { text: string; value: string }[];
-      const eventTypesJa = ["遅くなる", "速くなる"];
-      this.$constants.EVENT_TYPES.forEach((eventType, index) => {
-        eventTypes.push({
-          text: eventTypesJa[index],
-          value: eventType,
-        });
-      });
-      return eventTypes;
+      return this.$constants.EVENT_TYPES;
     },
-  },
-  mounted() {
-    this.eventTypes = this.$constants.EVENT_TYPES;
   },
   methods: {
     updatedRangeUpper(index: number, event: any) {
