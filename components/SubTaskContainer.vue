@@ -67,20 +67,9 @@ export default Vue.extend({
       required: true,
     },
   },
-  data() {
-    return {};
-  },
   computed: {
     units() {
-      const units = [] as { text: string; value: string }[];
-      const unitsJa = ["分", "時間", "日"];
-      this.subTasks.forEach((subTask, index) => {
-        units.push({
-          text: unitsJa[index],
-          value: subTask.unit,
-        });
-      });
-      return units;
+      return this.$constants.UNITS;
     },
   },
   methods: {
