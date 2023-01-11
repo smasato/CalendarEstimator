@@ -9,10 +9,10 @@
         :event-ripple="false"
         :events="events"
         :hide-header="true"
-        :interval-count="(24 * 60) / 15"
         color="primary"
-        first-interval="0"
+        first-time="8:00"
         interval-minutes="15"
+        :interval-count="(60 / 15) * 12"
         type="day"
         @change="fetchEvents"
         @mousedown:event="startDrag"
@@ -61,7 +61,7 @@ export default Vue.extend({
   data: (): DataType => {
     return {
       value: "",
-      type: "A1",
+      type: "B2",
       tasks: [] as Task[],
       events: [] as any[],
       dragEvent: null,
