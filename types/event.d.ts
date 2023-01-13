@@ -6,5 +6,5 @@ export type Event = {
   color: string;
   timed: boolean;
   fixed: boolean;
-  type: string;
+  type: "normal" | "task";
 };
