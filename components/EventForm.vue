@@ -124,11 +124,12 @@ export default Vue.extend({
         timed: true,
         fixed: false,
         type: "normal",
-        color:
-          this.$constants.CALENDAR_COLORS[
-            (this.$accessor.event.lastEventId + 1) %
-              this.$constants.CALENDAR_COLORS.length
-          ],
+        color: this.task
+          ? this.task.color
+          : this.$constants.CALENDAR_COLORS[
+              (this.$accessor.event.lastEventId + 1) %
+                this.$constants.CALENDAR_COLORS.length
+            ],
       };
 
       this.$accessor.event.addEvent(event);
