@@ -59,8 +59,11 @@ export default Vue.extend({
     this.value = this.$constants.DEFAULT_DATE;
     this.fetchEvents();
 
-    this.$store.subscribe((mutation, state) => {
-      if (mutation.type === "event/updateEvent") {
+    this.$store.subscribe((mutation) => {
+      if (
+        mutation.type === "event/updateEvent" ||
+        mutation.type === "event/addEvent"
+      ) {
         this.fetchEvents();
       }
     });
