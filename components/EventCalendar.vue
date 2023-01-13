@@ -4,15 +4,13 @@
       <v-calendar
         ref="calendar"
         v-model="value"
-        :event-color="getEventColor"
         :event-ripple="false"
         :events="events"
         :hide-header="true"
         color="primary"
         type="day"
-        first-time="8:00"
         interval-minutes="15"
-        :interval-count="(60 / 15) * 12"
+        :interval-count="(60 / 15) * 24"
         @change="fetchEvents"
         @mousedown:event="startDrag"
         @mousedown:time="startTime"
@@ -25,7 +23,6 @@
             :event-summary="eventSummary"
             :timed="timed"
             :event="event"
-            @event-mousedown="extendBottom(event)"
           ></CalendarEventNormal>
         </template>
       </v-calendar>
@@ -45,9 +42,6 @@ export type DataType = {
   dragEvent: any | null;
   dragStart: any | null;
   dragTime: any | null;
-  createEvent: any | null;
-  createStart: any | null;
-  extendOriginal: any | null;
 };
 
 export default Vue.extend({
@@ -55,23 +49,24 @@ export default Vue.extend({
   data: (): DataType => {
     return {
       value: "",
-      events: [],
+      events: [] as Event[],
       dragEvent: null,
       dragStart: null,
       dragTime: null,
-      createEvent: null,
-      createStart: null,
-      extendOriginal: null,
     };
   },
   mounted() {
-    this.value = dayjs(this.$constants.DEFAULT_DATE).format("YYYY-MM-DD");
-    this.$store.watch(
-      (state) => state.event.events,
-      (events) => {
-        this.events = events;
+    this.value = this.$constants.DEFAULT_DATE;
+    this.fetchEvents();
+
+    this.$store.subscribe((mutation) => {
+      if (
+        mutation.type === "event/updateEvent" ||
+        mutation.type === "event/addEvent"
+      ) {
+        this.fetchEvents();
       }
-    );
+    });
   },
   methods: {
     startDrag({ event, timed }) {
@@ -80,7 +75,6 @@ export default Vue.extend({
       if (event && timed) {
         this.dragEvent = event;
         this.dragTime = null;
-        this.extendOriginal = null;
       }
     },
     toTime(tms) {
@@ -101,17 +95,9 @@ export default Vue.extend({
         this.dragTime = mouse - start;
       }
     },
-    extendBottom(event) {
-      if (event.fixed === true) return;
-
-      this.createEvent = event;
-      this.createStart = event.start;
-      this.extendOriginal = event.end;
-    },
     mouseMove(tms) {
-      const mouse = this.toTime(tms);
-
       if (this.dragEvent && this.dragTime !== null) {
+        const mouse = this.toTime(tms);
         // イベントの移動
         const start = this.dragEvent.start;
         const end = this.dragEvent.end;
@@ -120,84 +106,53 @@ export default Vue.extend({
         const newStart = new Date(this.roundTime(newStartTime));
         const newEnd = new Date(newStart.getTime() + duration);
 
-        this.dragEvent.start = newStart;
-        this.dragEvent.end = newEnd;
-      } else if (this.createEvent && this.createStart !== null) {
-        const mouseRounded = this.roundTime(mouse, false);
-        const min = Math.min(mouseRounded, this.createStart);
-        const max = Math.max(mouseRounded, this.createStart);
-
-        this.createEvent.start = min;
-        this.createEvent.end = max;
-      }
-    },
-    endDrag(tms) {
-      const mouse = this.toTime(tms);
-
-      if (this.dragEvent && this.dragTime !== null) {
-        const start = this.dragEvent.start;
-        const end = this.dragEvent.end;
-        const duration = end - start;
-        const newStartTime = mouse - this.dragTime;
-        const newStart = new Date(this.roundTime(newStartTime));
-        const newEnd = new Date(newStart.getTime() + duration);
         const newEvent = {
           ...this.dragEvent,
           start: newStart,
           end: newEnd,
         };
         this.$accessor.event.updateEvent(newEvent);
-      } else if (this.createEvent && this.createStart !== null) {
-        const start = this.createEvent.start;
-        const end = this.createEvent.end;
-        const duration = end - start;
-        const newStart = new Date(this.roundTime(start));
-        const newEnd = new Date(newStart.getTime() + duration);
+      }
+    },
+    endDrag(tms) {
+      if (this.dragEvent && this.dragTime !== null) {
+        const mouse = this.toTime(tms);
 
-        const newEvent = {
-          ...this.createEvent,
-          start: newStart,
-          end: newEnd,
-        };
-        this.$accessor.event.updateEvent(newEvent);
+        const start = this.dragEvent.start;
+        const end = this.dragEvent.end;
+        const duration = end - start;
+        const newStartTime = mouse - this.dragTime;
+        const newStart = new Date(this.roundTime(newStartTime));
+        const newEnd = new Date(newStart.getTime() + duration);
+        const dragEvent = this.events.find(
+          (events) => events.id === this.dragEvent.id
+        );
+        if (dragEvent) {
+          const newEvent = {
+            ...dragEvent,
+            start: newStart,
+            end: newEnd,
+          };
+          this.$accessor.event.updateEvent(newEvent);
+        }
       }
       this.dragTime = null;
       this.dragEvent = null;
-      this.createEvent = null;
-      this.createStart = null;
-      this.extendOriginal = null;
     },
     cancelDrag() {
-      if (this.createEvent) {
-        if (this.extendOriginal) {
-          this.createEvent.end = this.extendOriginal;
-        } else {
-          const i = this.events.indexOf(this.createEvent);
-          if (i !== -1) {
-            this.events.splice(i, 1);
-          }
-        }
-      }
-
-      this.createEvent = null;
-      this.createStart = null;
       this.dragTime = null;
       this.dragEvent = null;
     },
     roundTime(time, down = true) {
-      const roundTo = 15; // minutes
+      const roundTo = 1; // minutes
       const roundDownTime = roundTo * 60 * 1000;
 
       return down
         ? time - (time % roundDownTime)
         : time + (roundDownTime - (time % roundDownTime));
     },
-    getEventColor(event: Event) {
-      return event.color;
-    },
     fetchEvents() {
       const events = [] as Event[];
-
       const startDay = dayjs(this.value).startOf("day");
       const endDay = dayjs(this.value).endOf("day");
 

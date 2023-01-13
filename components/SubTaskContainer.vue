@@ -27,6 +27,7 @@
               :max="subTask.range[1]"
               type="number"
               hide-details
+              :readonly="readOnly"
             ></v-text-field>
           </v-col>
           <v-col cols="auto">
@@ -39,6 +40,7 @@
               max="200"
               type="number"
               hide-details
+              :readonly="readOnly"
               @input="updatedRangeUpper(index, $event)"
             ></v-text-field>
           </v-col>
@@ -65,6 +67,10 @@ export default Vue.extend({
     subTasks: {
       type: Array as () => SubTask[],
       required: true,
+    },
+    readOnly: {
+      type: Boolean,
+      required: false,
     },
   },
   computed: {

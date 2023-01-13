@@ -10,96 +10,105 @@ const EVENT_TYPES = [
   { value: "slower", text: "遅くなる" },
   { value: "faster", text: "早くなる" },
 ];
-const CALENDAR_COLORS = [
-  "blue",
-  "indigo",
-  "deep-purple",
-  "cyan",
-  "green",
-  "orange",
-  "grey darken-1",
-];
+const CALENDAR_COLORS = ["blue", "indigo", "green"];
 const DEFAULT_DATE = "2023-01-01";
 
-const EXAMPLE_1 = {
-  name: "Example 1",
+const TASK = {
+  start: null,
+  end: null,
+  timed: true,
+  fixed: false,
+};
+
+const TASK_A: Task = {
+  ...TASK,
+  type: "task",
+  name: "Task A",
+  id: 1,
+  color: "blue",
   subTasks: [
     {
-      name: "getting ready to leave",
+      name: "SubTask A-1",
       range: [5, 10],
       unit: "minute(s)",
     },
     {
-      name: "going to the grocery store",
+      name: "SubTask A-2",
       range: [10, 15],
       unit: "minute(s)",
     },
     {
-      name: "finding the necessary items",
-      range: [1, 5],
+      name: "SubTask A-3",
+      range: [15, 20],
+      unit: "minute(s)",
+    },
+  ],
+  surprises: [
+    {
+      name: "Surprise A-1",
+      range: [5, 10],
+      unit: "minute(s)",
+      eventType: "slower",
+      probability: [1, 5],
+    },
+    {
+      name: "Surprise A-2",
+      range: [10, 15],
+      unit: "minute(s)",
+      eventType: "slower",
+      probability: [1, 2],
+    },
+  ],
+};
+
+const TASK_B: Task = {
+  ...TASK,
+  type: "task",
+  name: "Task B",
+  id: 2,
+  color: "indigo",
+  subTasks: [
+    {
+      name: "Subtask B-1",
+      range: [5, 10],
       unit: "minute(s)",
     },
     {
-      name: "paying for the items",
-      range: [2, 5],
-      unit: "minute(s)",
-    },
-    {
-      name: "getting back home",
+      name: "Subtask B-2",
       range: [10, 15],
       unit: "minute(s)",
     },
   ],
   surprises: [
     {
-      name: "I use a self-service cash register",
+      name: "Surprise B-1",
       range: [5, 10],
       unit: "minute(s)",
       eventType: "faster",
       probability: [0, 10],
     },
     {
-      name: "there is a long queue at the checkout",
+      name: "Surprise B-2",
       range: [10, 15],
       unit: "minute(s)",
       eventType: "slower",
       probability: [3, 10],
     },
     {
-      name: "the store was recently rearranged",
+      name: "Surprise B-3",
       range: [5, 10],
       unit: "minute(s)",
       eventType: "slower",
       probability: [1, 10],
-    },
-    {
-      name: "I meet someone I know on the way",
-      range: [10, 15],
-      unit: "minute(s)",
-      eventType: "slower",
-      probability: [1, 10],
-    },
-    {
-      name: "I plan ahead and know what to buy",
-      range: [2, 3],
-      unit: "minute(s)",
-      eventType: "faster",
-      probability: [3, 5],
-    },
-    {
-      name: "I cannot find my wallet or my keys",
-      range: [5, 10],
-      unit: "minute(s)",
-      eventType: "slower",
-      probability: [1, 5],
     },
   ],
-} as Task;
+};
 
 export interface ConstantsPluginInterface {
   readonly UNITS: Array<{ value: string; text: string }>;
   readonly EVENT_TYPES: Array<{ value: string; text: string }>;
-  readonly EXAMPLE_1: Task;
+  readonly TASK_A: Task;
+  readonly TASK_B: Task;
   readonly CALENDAR_COLORS: Array<string>;
   readonly DEFAULT_DATE: string;
 }
@@ -107,7 +116,8 @@ export interface ConstantsPluginInterface {
 class ConstantsPlugin implements ConstantsPluginInterface {
   readonly UNITS = UNITS;
   readonly EVENT_TYPES = EVENT_TYPES;
-  readonly EXAMPLE_1 = EXAMPLE_1;
+  readonly TASK_A = TASK_A;
+  readonly TASK_B = TASK_B;
   readonly CALENDAR_COLORS = CALENDAR_COLORS;
   readonly DEFAULT_DATE = DEFAULT_DATE;
 }

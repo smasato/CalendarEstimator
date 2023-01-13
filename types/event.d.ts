@@ -1,10 +1,10 @@
 export type Event = {
-  id: number;
+  id: number | null;
   name: string;
-  start: Date;
-  end: Date;
+  start: Date | null;
+  end: Date | null;
   color: string;
   timed: boolean;
   fixed: boolean;
-  type: string;
+  type: "normal" | "task";
 };

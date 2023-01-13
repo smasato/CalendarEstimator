@@ -9,9 +9,12 @@ export type RootState = ReturnType<typeof state>;
 
 export const getters = getterTree(state, {
   tasks: (state) => state.tasks,
-  lastTaskId: (state) => {
+  lastTaskId: (state): number => {
+    if (state.tasks.length === 0) {
+      return -1;
+    }
     const lastTask = state.tasks[state.tasks.length - 1];
-    return lastTask ? lastTask.id : -1;
+    return lastTask.id !== null ? lastTask.id : -1;
   },
 });
 
@@ -28,9 +31,6 @@ export const mutations = mutationTree(state, {
   },
   resetTasks(state) {
     state.tasks = [];
-  },
-  initialiseStore() {
-    console.log("initialised task store");
   },
 });
 
