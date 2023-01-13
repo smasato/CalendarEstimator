@@ -14,6 +14,14 @@ export default VCalendar.extend({
         return event.type === "task" ? "black" : "white";
       },
     },
+    eventOverlapMode: {
+      type: String,
+      default: "stack",
+    },
+    eventOverlapThreshold: {
+      type: Number,
+      default: 0,
+    },
   },
   methods: {
     // heightに対するyPositionの割合を計算する

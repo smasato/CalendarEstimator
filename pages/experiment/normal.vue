@@ -80,6 +80,7 @@
                 </p>
                 <p>
                   タスクCに着手できる時刻にあらかじめ18時に登録されているタスクCの予定を移動させてください。
+                  完了したら「次へ」をクリックしてください。
                 </p>
               </v-col>
             </v-row>
@@ -90,8 +91,10 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-btn @click="$router.push('/experiment/visualization')"
-              >Visualization</v-btn
+            <v-btn
+              :disabled="!taskA || !taskB || !eventA || !eventB"
+              @click="$router.push('/experiment/visualization')"
+              >次へ</v-btn
             >
           </v-col>
         </v-row>
