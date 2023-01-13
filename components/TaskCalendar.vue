@@ -5,14 +5,12 @@
         :is="eventTypeComponent"
         ref="calendar"
         v-model="value"
-        :event-color="getEventColor"
         :event-ripple="false"
         :events="events"
         :hide-header="true"
         color="primary"
-        first-time="8:00"
         interval-minutes="15"
-        :interval-count="(60 / 15) * 12"
+        :interval-count="(60 / 15) * 24"
         type="day"
         @change="fetchEvents"
         @mousedown:event="startDrag"
@@ -39,8 +37,7 @@
 <script lang="ts">
 import Vue from "vue";
 import dayjs from "dayjs";
-import { Task, TaskWithEstimateResult } from "~/types/task";
-import { Event } from "~/types/event";
+import { Task } from "~/types/task";
 import CalendarEventGradation from "~/components/CalendarEventGradation.vue";
 
 export type DataType = {
@@ -73,8 +70,7 @@ export default Vue.extend({
     taskEstimate: function () {
       return (taskIdx: number) => {
         const task = this.tasks[taskIdx];
-        const estimateResult = this.$estimate.estimate(task);
-        return estimateResult;
+        return this.$estimate.estimate(task);
       };
     },
     tasksWithEstimateResult: function () {
@@ -91,32 +87,22 @@ export default Vue.extend({
     },
   },
   mounted() {
-    this.value = dayjs(this.$constants.DEFAULT_DATE).format("YYYY-MM-DD");
-    this.$store.watch(
-      (state) => state.task.tasks,
-      (tasks) => {
-        this.tasks = tasks;
-        this.updateEvents();
+    this.value = this.$constants.DEFAULT_DATE;
+    this.fetchEvents();
+
+    this.$store.subscribe((mutation, state) => {
+      if (
+        mutation.type === "tasks/updateTask" ||
+        mutation.type === "tasks/addTask"
+      ) {
+        this.tasks = state.tasks.tasks;
+        this.fetchEvents();
       }
-    );
+    });
   },
   methods: {
     updateEvents() {
-      const event: Event & { estimateResult: Object } = {
-        id: -1,
-        name: "Fixed Event",
-        start: dayjs(this.$constants.DEFAULT_DATE).toDate(),
-        end: dayjs(this.$constants.DEFAULT_DATE).add(10, "minute").toDate(),
-        timed: true,
-        fixed: true,
-        type: "normal",
-        color: "green",
-        estimateResult: {},
-      };
-      const events: (TaskWithEstimateResult | Event)[] =
-        this.tasksWithEstimateResult;
-      events.push(event);
-      this.events = events;
+      this.events = this.tasksWithEstimateResult;
     },
     startDrag({ event, timed }) {
       if (event.fixed === true) return;
@@ -196,9 +182,6 @@ export default Vue.extend({
       return down
         ? time - (time % roundDownTime)
         : time + (roundDownTime - (time % roundDownTime));
-    },
-    getEventColor(task: Task) {
-      return task.color;
     },
     fetchEvents() {
       const tasks: Task[] = [];
