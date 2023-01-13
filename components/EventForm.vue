@@ -1,36 +1,54 @@
 <template>
-  <v-dialog v-model="dialog" width="50%" @click:outside="onClickOutside">
+  <v-dialog v-model="dialog" width="70%" @click:outside="onClickOutside">
     <v-card>
-      <v-container>
+      <v-container v-if="task">
+        <v-row>
+          <v-col>
+            <v-container>
+              <v-row>
+                <SubTaskContainer
+                  :sub-tasks="task.subTasks"
+                  :read-only="true"
+                />
+              </v-row>
+              <v-row>
+                <SurprisesContainer
+                  :surprises="task.surprises"
+                  :read-only="true"
+                />
+              </v-row>
+            </v-container>
+          </v-col>
+        </v-row>
         <v-row>
           <v-col cols="4">
-            <v-form ref="form" v-model="valid" lazy-validation>
-              <v-text-field
-                v-model="event.name"
-                required
-                :rules="[rules.required]"
-                label="Name"
-              ></v-text-field>
-              <v-text-field
-                v-model="event.start"
-                type="datetime-local"
-                label="Start Date"
-              />
-              <v-text-field
-                v-model="event.duration"
-                dense
-                label="Duration"
-                type="number"
-                min="1"
-                suffix="minute(s)"
-              />
-              <v-btn :disabled="!valid" color="success" @click="addEvent"
-                >Create Event</v-btn
-              >
-            </v-form>
-          </v-col>
-          <v-col cols="auto">
-            <p>Messages</p>
+            <v-container>
+              <VForm ref="form" v-model="valid" lazy-validation>
+                <v-text-field
+                  v-model="event.name"
+                  required
+                  disabled
+                  :rules="[rules.required]"
+                  label="タスク名"
+                ></v-text-field>
+                <v-text-field
+                  v-model="event.start"
+                  type="time"
+                  label="開始時刻"
+                />
+                <v-text-field
+                  v-model="event.duration"
+                  dense
+                  label="所要時間"
+                  type="number"
+                  min="1"
+                  suffix="分"
+                />
+                <v-btn :disabled="!valid" color="success" @click="addEvent"
+                  >Create Event</v-btn
+                >
+              </VForm>
+            </v-container>
           </v-col>
         </v-row>
       </v-container>
@@ -43,20 +61,27 @@ import Vue from "vue";
 import dayjs from "dayjs";
 import VForm from "vuetify/lib/components/VForm";
 import { Event } from "~/types/event";
-
+import { Task } from "~/types/task";
+import SubTaskContainer from "~/components/SubTaskContainer.vue";
+import SurprisesContainer from "~/components/SurprisesContainer.vue";
 export default Vue.extend({
+  components: {
+    VForm,
+    SubTaskContainer,
+    SurprisesContainer,
+  },
   props: {
     value: Boolean,
+    eventId: String,
   },
   data() {
     return {
       dialog: false,
       valid: false,
+      task: null as Task | null,
       event: {
         name: "",
-        start: dayjs(this.$constants.DEFAULT_DATE)
-          .startOf("day")
-          .format("YYYY-MM-DDTHH:mm"),
+        start: "00:00",
         duration: 1,
       },
       rules: {
@@ -69,6 +94,15 @@ export default Vue.extend({
       immediate: true,
       handler(value) {
         this.dialog = value;
+        if (this.eventId) {
+          const task = this.$accessor.task.tasks.find(
+            (task) => task.name === `Task ${this.eventId}`
+          );
+          if (task) {
+            this.task = task;
+            this.event.name = task.name;
+          }
+        }
       },
     },
   },
@@ -77,7 +111,10 @@ export default Vue.extend({
       const form = this.$refs.form as VForm;
       form.validate();
 
-      const start = dayjs(this.event.start);
+      const start = dayjs(
+        `${this.$constants.DEFAULT_DATE} ${this.event.start}`,
+        "YYYY-MM-DD HH:mm"
+      );
       const end = start.add(this.event.duration, "minute");
       const event: Event = {
         id: this.$accessor.event.lastEventId + 1,
@@ -101,9 +138,7 @@ export default Vue.extend({
     },
     resetEvent() {
       this.event.name = "";
-      this.event.start = dayjs(this.$constants.DEFAULT_DATE)
-        .startOf("day")
-        .format("YYYY-MM-DDTHH:mm");
+      this.event.start = "00:00";
       this.event.duration = 1;
 
       const form = this.$refs.form as VForm;

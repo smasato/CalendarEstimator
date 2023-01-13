@@ -4,14 +4,6 @@
       <v-container>
         <v-row>
           <v-col>
-            <v-btn @click="setExample1">Example 1</v-btn>
-          </v-col>
-          <v-col>
-            <v-btn @click="resetTask">Try if yourself</v-btn>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
             <v-text-field
               v-model="task.name"
               hide-details
@@ -50,11 +42,17 @@ export default Vue.extend({
   },
   props: {
     value: Boolean,
+    taskId: {
+      type: String,
+      required: false,
+      default: "",
+    },
   },
   data() {
     return {
       dialog: false,
       task: {
+        id: null,
         name: "",
         subTasks: [
           {
@@ -80,6 +78,14 @@ export default Vue.extend({
       immediate: true,
       handler(value) {
         this.dialog = value;
+        switch (this.taskId) {
+          case "A":
+            this.setTask("A");
+            break;
+          case "B":
+            this.setTask("B");
+            break;
+        }
       },
     },
   },
@@ -88,15 +94,29 @@ export default Vue.extend({
       const task = this.task;
       const estimate = this.$estimate.estimate(task);
 
-      const start = dayjs(this.$constants.DEFAULT_DATE).startOf("day");
+      const start = dayjs(
+        this.$constants.DEFAULT_DATE + " 9:00",
+        "YYYY-MM-DD HH:mm"
+      );
       const end = dayjs(start).add(estimate.max, "minute");
-      task.id = this.$accessor.task.lastTaskId + 1;
       task.start = start.toDate();
       task.end = end.toDate();
+
+      if (task.id === null) {
+        task.id = this.$accessor.task.lastTaskId + 1;
+      }
+
       task.timed = true;
-      task.color = "blue";
-      task.fixed = false;
-      task.type = "task";
+
+      if (task.color === undefined) {
+        task.color = "blue";
+      }
+      if (task.fixed === undefined) {
+        task.fixed = false;
+      }
+      if (task.type === undefined) {
+        task.type = "task";
+      }
 
       this.$accessor.task.addTask(task);
       this.resetTask();
@@ -123,8 +143,15 @@ export default Vue.extend({
         ],
       } as Task;
     },
-    setExample1() {
-      this.task = JSON.parse(JSON.stringify(this.$constants.EXAMPLE_1));
+    setTask(taskId: string) {
+      switch (taskId) {
+        case "A":
+          this.task = JSON.parse(JSON.stringify(this.$constants.TASK_A));
+          break;
+        case "B":
+          this.task = JSON.parse(JSON.stringify(this.$constants.TASK_B));
+          break;
+      }
     },
     onClickOutside() {
       this.resetTask();
