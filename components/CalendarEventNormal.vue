@@ -3,11 +3,6 @@
     <div class="v-event-draggable">
       <component :is="{ render: eventSummary }"></component>
     </div>
-    <div
-      v-if="event.timed"
-      class="v-event-drag-bottom"
-      @mousedown.stop="$emit('event-mousedown', event)"
-    ></div>
   </div>
 </template>
 
