@@ -18,11 +18,11 @@ const TASK = {
   end: null,
   timed: true,
   fixed: false,
-  type: "task",
 };
 
 const TASK_A: Task = {
   ...TASK,
+  type: "task",
   name: "Task A",
   id: 1,
   color: "blue",
@@ -63,6 +63,7 @@ const TASK_A: Task = {
 
 const TASK_B: Task = {
   ...TASK,
+  type: "task",
   name: "Task B",
   id: 2,
   color: "indigo",
