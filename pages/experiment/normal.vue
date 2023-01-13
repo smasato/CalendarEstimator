@@ -90,7 +90,9 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-btn @click="$router.push('/experiment/visualization')"
+            <v-btn
+              :disabled="!taskA || !taskB || !eventA || !eventB"
+              @click="$router.push('/experiment/visualization')"
               >Visualization</v-btn
             >
           </v-col>
