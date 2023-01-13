@@ -9,9 +9,12 @@ export type RootState = ReturnType<typeof state>;
 
 export const getters = getterTree(state, {
   events: (state) => state.events,
-  lastEventId: (state) => {
+  lastEventId: (state): number => {
+    if (state.events.length === 0) {
+      return -1;
+    }
     const lastEvent = state.events[state.events.length - 1];
-    return lastEvent ? lastEvent.id : -1;
+    return lastEvent.id ? lastEvent.id : -1;
   },
 });
 
@@ -28,9 +31,6 @@ export const mutations = mutationTree(state, {
   },
   resetEvents(state) {
     state.events = [];
-  },
-  initialiseStore() {
-    console.log("initialised event store");
   },
 });
 
