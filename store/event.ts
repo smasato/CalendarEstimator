@@ -14,7 +14,7 @@ export const getters = getterTree(state, {
       return -1;
     }
     const lastEvent = state.events[state.events.length - 1];
-    return lastEvent.id ? lastEvent.id : -1;
+    return lastEvent.id !== null ? lastEvent.id : -1;
   },
 });
 

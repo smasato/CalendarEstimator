@@ -14,7 +14,7 @@ export const getters = getterTree(state, {
       return -1;
     }
     const lastTask = state.tasks[state.tasks.length - 1];
-    return lastTask.id ? lastTask.id : -1;
+    return lastTask.id !== null ? lastTask.id : -1;
   },
 });
 
