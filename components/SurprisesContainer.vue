@@ -128,7 +128,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      localSurprises: { ...this.surprises },
+      localSurprises: this.surprises,
     };
   },
   computed: {

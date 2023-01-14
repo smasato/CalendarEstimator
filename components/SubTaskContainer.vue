@@ -79,7 +79,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      localSubTasks: { ...this.subTasks },
+      localSubTasks: this.subTasks,
     };
   },
   computed: {

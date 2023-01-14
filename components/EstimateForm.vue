@@ -97,11 +97,16 @@ export default Vue.extend({
   },
   methods: {
     addTask() {
+      // return if the task is not valid
+      if (this.task.surprises.some((s) => s.probability[1] === 0)) {
+        return;
+      }
+
       const task = this.task;
       const estimate = this.$estimate.estimate(task);
 
       const start = dayjs(
-        this.$constants.DEFAULT_DATE + " 9:00",
+        this.$constants.DEFAULT_DATE + " 09:00",
         "YYYY-MM-DD HH:mm"
       );
       const end = dayjs(start).add(estimate.max, "minute");
