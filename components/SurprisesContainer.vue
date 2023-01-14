@@ -8,7 +8,7 @@
         </div>
       </v-col>
     </v-row>
-    <v-row v-for="(surprise, index) in surprises" :key="index">
+    <v-row v-for="(surprise, index) in localSurprises" :key="index">
       <v-col cols="12">
         <v-row align="baseline">
           <v-col cols="auto">
@@ -28,7 +28,7 @@
             <v-row align="baseline">
               <v-col cols="auto">
                 <v-text-field
-                  v-model="surprise.range[0]"
+                  v-model.number="surprise.range[0]"
                   dense
                   min="0"
                   :max="surprise.range[1]"
@@ -42,14 +42,14 @@
               </v-col>
               <v-col cols="auto">
                 <v-text-field
-                  v-model="surprise.range[1]"
+                  v-model.number="surprise.range[1]"
                   dense
                   min="0"
                   max="200"
                   type="number"
                   hide-details
                   :readonly="readOnly"
-                  @input="updatedRangeUpper(index, $event)"
+                  @blur="updatedRangeUpper(index)"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -74,7 +74,8 @@
         <v-row align="baseline" class="mt-n4">
           <v-col cols="auto">
             <v-text-field
-              v-model="surprise.probability[1]"
+              v-model.number="surprise.probability[1]"
+              :error="surprise.probability[1] === 0"
               dense
               hide-details
               type="number"
@@ -90,13 +91,14 @@
 
           <v-col cols="auto">
             <v-text-field
-              v-model="surprise.probability[0]"
+              v-model.number="surprise.probability[0]"
               dense
               hide-details
               type="number"
               min="0"
               max="1000"
               :readonly="readOnly"
+              @blur="updatedProbability(index)"
             ></v-text-field>
           </v-col>
 
@@ -124,7 +126,11 @@ export default Vue.extend({
       required: false,
     },
   },
-
+  data() {
+    return {
+      localSurprises: { ...this.surprises },
+    };
+  },
   computed: {
     units() {
       return this.$constants.UNITS;
@@ -133,11 +139,35 @@ export default Vue.extend({
       return this.$constants.EVENT_TYPES;
     },
   },
+  watch: {
+    localSurprises: {
+      handler() {
+        this.$emit("update:surprises", this.localSurprises);
+      },
+      deep: true,
+    },
+  },
   methods: {
-    updatedRangeUpper(index: number, event: any) {
-      const temp = Number(event);
-      if (this.surprises[index].range[0] > temp) {
-        this.surprises[index].range[0] = temp;
+    updatedRangeUpper(index: number) {
+      if (
+        this.localSurprises[index].range[0] >
+        this.localSurprises[index].range[1]
+      ) {
+        this.localSurprises[index].range = [
+          this.localSurprises[index].range[1],
+          this.localSurprises[index].range[0],
+        ];
+      }
+    },
+    updatedProbability(index: number) {
+      if (
+        this.localSurprises[index].probability[0] >
+        this.localSurprises[index].probability[1]
+      ) {
+        this.localSurprises[index].probability = [
+          this.localSurprises[index].probability[1],
+          this.localSurprises[index].probability[1],
+        ];
       }
     },
   },

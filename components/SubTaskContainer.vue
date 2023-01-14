@@ -5,7 +5,11 @@
         <div class="text-h5">1. タスクをステップに分解する</div>
       </v-col>
     </v-row>
-    <v-row v-for="(subTask, index) in subTasks" :key="index" align="baseline">
+    <v-row
+      v-for="(subTask, index) in localSubTasks"
+      :key="index"
+      align="baseline"
+    >
       <v-col cols="auto">
         <span>{{ index + 1 }}.</span>
       </v-col>
@@ -21,7 +25,7 @@
         <v-row align="baseline">
           <v-col cols="2">
             <v-text-field
-              v-model="subTask.range[0]"
+              v-model.number="subTask.range[0]"
               class="mr-1"
               min="0"
               :max="subTask.range[1]"
@@ -35,13 +39,13 @@
           </v-col>
           <v-col cols="2">
             <v-text-field
-              v-model="subTask.range[1]"
+              v-model.number="subTask.range[1]"
               min="0"
               max="200"
               type="number"
               hide-details
               :readonly="readOnly"
-              @change="updatedRangeUpper(index, $event)"
+              @blur="updatedRangeUpper(index)"
             ></v-text-field>
           </v-col>
           <v-col cols="3">
@@ -73,16 +77,33 @@ export default Vue.extend({
       required: false,
     },
   },
+  data() {
+    return {
+      localSubTasks: { ...this.subTasks },
+    };
+  },
   computed: {
     units() {
       return this.$constants.UNITS;
     },
   },
+  watch: {
+    localSubTasks: {
+      handler() {
+        this.$emit("update:subTasks", this.localSubTasks);
+      },
+      deep: true,
+    },
+  },
   methods: {
-    updatedRangeUpper(index: number, event: any) {
-      const temp = Number(event);
-      if (this.subTasks[index].range[0] > temp) {
-        this.subTasks[index].range[0] = temp;
+    updatedRangeUpper(index: number) {
+      if (
+        this.localSubTasks[index].range[0] > this.localSubTasks[index].range[1]
+      ) {
+        this.localSubTasks[index].range = [
+          this.localSubTasks[index].range[1],
+          this.localSubTasks[index].range[0],
+        ];
       }
     },
   },

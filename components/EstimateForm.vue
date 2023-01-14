@@ -13,10 +13,16 @@
           </v-col>
         </v-row>
         <v-row>
-          <SubTaskContainer :sub-tasks="task.subTasks" />
+          <SubTaskContainer
+            :sub-tasks="task.subTasks"
+            @update:subTasks="task.subTasks = $event"
+          />
         </v-row>
         <v-row>
-          <SurprisesContainer :surprises="task.surprises" />
+          <SurprisesContainer
+            :surprises="task.surprises"
+            @update:surprises="task.surprises = $event"
+          />
         </v-row>
         <v-row>
           <v-col>
