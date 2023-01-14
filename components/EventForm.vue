@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="70%" @click:outside="onClickOutside">
+  <v-dialog v-model="dialog" width="70%" :persistent="true">
     <v-card>
       <v-container v-if="task">
         <v-row>
@@ -72,7 +72,7 @@ export default Vue.extend({
   },
   props: {
     value: Boolean,
-    eventId: String,
+    eventId: Number,
   },
   data() {
     return {
@@ -144,10 +144,6 @@ export default Vue.extend({
 
       const form = this.$refs.form as VForm;
       form.resetValidation();
-    },
-    onClickOutside() {
-      this.resetEvent();
-      this.$emit("close-event-form");
     },
   },
 });

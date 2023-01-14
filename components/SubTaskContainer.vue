@@ -41,7 +41,7 @@
               type="number"
               hide-details
               :readonly="readOnly"
-              @input="updatedRangeUpper(index, $event)"
+              @change="updatedRangeUpper(index, $event)"
             ></v-text-field>
           </v-col>
           <v-col cols="3">

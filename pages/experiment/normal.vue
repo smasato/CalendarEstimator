@@ -24,12 +24,12 @@
             </v-row>
             <v-row>
               <v-col>
-                <v-btn :disabled="taskA" @click="estimateTask('A')"
+                <v-btn :disabled="taskA" @click="estimateTask(1)"
                   >所要時間見積もり</v-btn
                 >
               </v-col>
               <v-col>
-                <v-btn :disabled="!taskA || eventA" @click="addEvent('A')"
+                <v-btn :disabled="!taskA || eventA" @click="addEvent(1)"
                   >所要時間の入力</v-btn
                 >
               </v-col>
@@ -41,12 +41,12 @@
             </v-row>
             <v-row>
               <v-col>
-                <v-btn :disabled="taskB" @click="estimateTask('B')"
+                <v-btn :disabled="taskB" @click="estimateTask(2)"
                   >所要時間見積もり</v-btn
                 >
               </v-col>
               <v-col>
-                <v-btn :disabled="!taskB || eventB" @click="addEvent('B')"
+                <v-btn :disabled="!taskB || eventB" @click="addEvent(2)"
                   >所要時間の入力</v-btn
                 >
               </v-col>
@@ -85,7 +85,9 @@
               </v-col>
             </v-row>
             <v-row>
-              <EventCalendar />
+              <v-col cols="3">
+                <EventCalendar style="height: 600px; overflow-y: scroll" />
+              </v-col>
             </v-row>
           </v-container>
         </v-row>
@@ -116,8 +118,8 @@ export default Vue.extend({
   data: () => ({
     estimateForm: false,
     eventForm: false,
-    taskId: "",
-    eventId: "",
+    taskId: -1,
+    eventId: -1,
   }),
   head() {
     return {
@@ -127,35 +129,33 @@ export default Vue.extend({
   computed: {
     taskA() {
       return (
-        this.$accessor.task.tasks.find((task) => task.name === "Task A") !==
-        undefined
+        this.$accessor.task.tasks.find((task) => task.id === 1) !== undefined
       );
     },
     eventA() {
       return (
-        this.$accessor.event.events.find((event) => event.name === "Task A") !==
+        this.$accessor.event.events.find((event) => event.id === 1) !==
         undefined
       );
     },
     taskB() {
       return (
-        this.$accessor.task.tasks.find((task) => task.name === "Task B") !==
-        undefined
+        this.$accessor.task.tasks.find((task) => task.id === 2) !== undefined
       );
     },
     eventB() {
       return (
-        this.$accessor.event.events.find((event) => event.name === "Task B") !==
+        this.$accessor.event.events.find((event) => event.id === 2) !==
         undefined
       );
     },
   },
   methods: {
-    estimateTask(taskId: string) {
+    estimateTask(taskId: number) {
       this.taskId = taskId;
       this.estimateForm = true;
     },
-    addEvent(eventId: string) {
+    addEvent(eventId: number) {
       this.eventId = eventId;
       this.eventForm = true;
     },

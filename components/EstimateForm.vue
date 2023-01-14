@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="70%" @click:outside="onClickOutside">
+  <v-dialog v-model="dialog" max-width="70%" :persistent="true">
     <v-card>
       <v-container>
         <v-row>
@@ -43,9 +43,9 @@ export default Vue.extend({
   props: {
     value: Boolean,
     taskId: {
-      type: String,
+      type: Number,
       required: false,
-      default: "",
+      default: -1,
     },
   },
   data() {
@@ -79,10 +79,10 @@ export default Vue.extend({
       handler(value) {
         this.dialog = value;
         switch (this.taskId) {
-          case "A":
+          case 1:
             this.setTask("A");
             break;
-          case "B":
+          case 2:
             this.setTask("B");
             break;
         }
@@ -152,10 +152,6 @@ export default Vue.extend({
           this.task = JSON.parse(JSON.stringify(this.$constants.TASK_B));
           break;
       }
-    },
-    onClickOutside() {
-      this.resetTask();
-      this.$emit("close-dialog");
     },
   },
 });

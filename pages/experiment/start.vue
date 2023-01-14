@@ -44,7 +44,7 @@ export default Vue.extend({
       const end = dayjs(start).add(30, "minutes").toDate();
 
       const eventC: Event = {
-        name: "Task C",
+        name: "タスク C",
         start,
         end,
         id: 0,
@@ -56,7 +56,7 @@ export default Vue.extend({
       this.$accessor.event.addEvent(eventC);
 
       const taskC: Task = {
-        name: "Task C",
+        name: "タスク C",
         start,
         end,
         id: 0,
