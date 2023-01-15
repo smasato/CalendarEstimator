@@ -7,12 +7,14 @@
           <v-col>
             <h1>通常カレンダー表示でのスケジューリング</h1>
             <p>
-              このページでは、通常のカレンダー表示でのスケジューリングを行います。
-              それぞれのタスクに対して、見積もりと所要時間の入力をしてください。
+              このページでは、通常のカレンダー表示でのスケジューリングを行います。<br />
+              それぞれのタスクに対して、所要時間見積もりと所要時間の入力をしてください。<br />
+              詳細な説明はボタンをクリックすると表示されます。
             </p>
             <p>
               所要時間見積もりでの入力内容は所要時間の入力のステップでも表示されます。
             </p>
+            <p>タスクAからタスクBの順に入力してください。</p>
           </v-col>
         </v-row>
         <v-row>
@@ -23,16 +25,17 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col>
+              <v-col cols="auto">
                 <v-btn :disabled="taskA" @click="estimateTask(1)"
                   >所要時間見積もり</v-btn
                 >
               </v-col>
-              <v-col>
+              <v-col cols="auto">
                 <v-btn :disabled="!taskA || eventA" @click="addEvent(1)"
                   >所要時間の入力</v-btn
                 >
               </v-col>
+              <v-spacer></v-spacer>
             </v-row>
             <v-row>
               <v-col>
@@ -40,16 +43,17 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col>
+              <v-col cols="auto">
                 <v-btn :disabled="taskB" @click="estimateTask(2)"
                   >所要時間見積もり</v-btn
                 >
               </v-col>
-              <v-col>
+              <v-col cols="auto">
                 <v-btn :disabled="!taskB || eventB" @click="addEvent(2)"
                   >所要時間の入力</v-btn
                 >
               </v-col>
+              <v-spacer></v-spacer>
             </v-row>
             <v-row>
               <v-col>

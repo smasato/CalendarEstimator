@@ -6,6 +6,14 @@
           2.
           所要時間が遅くなったり、速くなったりするようなサプライズイベントを考慮する
         </div>
+        <p>
+          タスクを実行する際に、所要時間が遅くなったり、速くなったりするようなサプライズイベントが発生することがあります。<br />
+          このようなサプライズイベントを考慮して、タスクの所要時間を見積もると、より正確な所要時間見積もりが可能になります。<br />
+        </p>
+        <p>
+          各サプライズイベントについて、発生確率とそのときの影響時間の範囲を入力してください。<br />
+          サプライズイベントが起きない場合は、発生確率を「1回のうち0回」に設定してください。
+        </p>
       </v-col>
     </v-row>
     <v-row v-for="(surprise, index) in localSurprises" :key="index">
@@ -24,37 +32,39 @@
             ></v-text-field>
           </v-col>
 
-          <v-col cols="auto">
+          <v-col cols="4">
             <v-row align="baseline">
-              <v-col cols="auto">
+              <v-col cols="5">
                 <v-text-field
                   v-model.number="surprise.range[0]"
                   dense
                   min="0"
                   :max="surprise.range[1]"
                   type="number"
-                  hide-details
+                  label="最短"
+                  hint="0以上の整数を入力"
                   :readonly="readOnly"
                 ></v-text-field>
               </v-col>
-              <v-col cols="auto">
+              <v-col cols="2">
                 <p>から</p>
               </v-col>
-              <v-col cols="auto">
+              <v-col cols="5">
                 <v-text-field
                   v-model.number="surprise.range[1]"
                   dense
                   min="0"
                   max="200"
                   type="number"
-                  hide-details
+                  label="最長"
+                  hint="最短時間以上の整数を入力"
                   :readonly="readOnly"
                   @blur="updatedRangeUpper(index)"
                 ></v-text-field>
               </v-col>
             </v-row>
           </v-col>
-          <v-col cols="auto">
+          <v-col cols="1">
             <v-select
               v-model="surprise.unit"
               hide-details
@@ -72,39 +82,40 @@
           ></v-col>
         </v-row>
         <v-row align="baseline" class="mt-n4">
-          <v-col cols="auto">
+          <v-col cols="1">
             <v-text-field
               v-model.number="surprise.probability[1]"
               :error="surprise.probability[1] === 0"
-              dense
-              hide-details
+              hint="1以上の整数を入力"
               type="number"
               min="1"
               max="1000"
+              suffix="回"
               :readonly="readOnly"
             ></v-text-field>
           </v-col>
 
           <v-col cols="auto">
-            <span>回のうち</span>
+            <span>のうち</span>
           </v-col>
 
-          <v-col cols="auto">
+          <v-col cols="1">
             <v-text-field
               v-model.number="surprise.probability[0]"
-              dense
-              hide-details
+              hint="0以上の整数を入力"
               type="number"
               min="0"
               max="1000"
               :readonly="readOnly"
+              suffix="回"
               @blur="updatedProbability(index)"
             ></v-text-field>
           </v-col>
 
           <v-col cols="auto">
-            <span>回 起こります</span>
+            <span>起こる</span>
           </v-col>
+          <v-spacer></v-spacer>
         </v-row>
       </v-col>
     </v-row>
