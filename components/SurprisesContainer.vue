@@ -157,6 +157,12 @@ export default Vue.extend({
       },
       deep: true,
     },
+    surprises: {
+      handler() {
+        this.localSurprises = this.surprises;
+      },
+      deep: true,
+    },
   },
   methods: {
     updatedRangeUpper(index: number) {
