@@ -102,6 +102,12 @@ export default Vue.extend({
       },
       deep: true,
     },
+    subTasks: {
+      handler() {
+        this.localSubTasks = this.subTasks;
+      },
+      deep: true,
+    },
   },
   methods: {
     updatedRangeUpper(index: number) {
