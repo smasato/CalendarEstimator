@@ -3,8 +3,23 @@
     <v-card>
       <v-container v-if="task">
         <v-row>
+          <v-col cols="12">
+            <p>次のタスクについての所要時間を見積もります。</p>
+          </v-col>
+        </v-row>
+        <v-row>
           <v-col>
             <v-container>
+              <v-row>
+                <v-col>
+                  <v-text-field
+                    v-model="task.name"
+                    hide-details
+                    label="タスク名"
+                    disabled
+                  ></v-text-field>
+                </v-col>
+              </v-row>
               <v-row>
                 <SubTaskContainer
                   :sub-tasks="task.subTasks"
@@ -18,6 +33,11 @@
                 />
               </v-row>
             </v-container>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12">
+            <p>入力をもとに所要時間を入力してください。</p>
           </v-col>
         </v-row>
         <v-row>
@@ -40,7 +60,7 @@
                   suffix="分"
                 />
                 <v-btn :disabled="!valid" color="success" @click="addEvent"
-                  >Create Event</v-btn
+                  >OK</v-btn
                 >
               </VForm>
             </v-container>
@@ -105,6 +125,11 @@ export default Vue.extend({
       const form = this.$refs.form as VForm;
       form.validate();
 
+      this.$accessor.log.addLog({
+        event: `end adding event ${this.eventId}`,
+        timestamp: new Date(),
+      });
+
       const start = dayjs(
         `${this.$constants.DEFAULT_DATE} 09:00`,
         "YYYY-MM-DD HH:mm"
@@ -116,7 +141,7 @@ export default Vue.extend({
         start: start.toDate(),
         end: end.toDate(),
         timed: true,
-        fixed: false,
+        fixed: this.task?.fixed || false,
         type: "normal",
         color: this.task
           ? this.task.color
@@ -126,10 +151,11 @@ export default Vue.extend({
             ],
       };
 
-      this.$accessor.event.addEvent(event);
-      this.resetEvent();
       this.$emit("close-event-form");
+      this.$accessor.event.addEvent(event);
       this.$emit("add-event");
+
+      this.resetEvent();
     },
     resetEvent() {
       this.event.name = "";

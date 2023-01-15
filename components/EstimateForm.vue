@@ -12,7 +12,7 @@
             <v-text-field
               v-model="task.name"
               hide-details
-              label="Name"
+              label="タスク名"
               disabled
             ></v-text-field>
           </v-col>
@@ -113,6 +113,11 @@ export default Vue.extend({
       if (this.task.surprises.some((s) => s.probability[1] === 0)) {
         return;
       }
+
+      this.$accessor.log.addLog({
+        event: `end estimating task ${this.taskId}`,
+        timestamp: new Date(),
+      });
 
       const task = this.task;
       const estimate = this.$estimate.estimate(task);

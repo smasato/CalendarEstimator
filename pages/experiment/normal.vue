@@ -77,13 +77,15 @@
               <v-col>
                 <h2>スケジューリング</h2>
                 <p>
-                  タスクAとタスクBの所要時間の入力が完了すると、以下のカレンダーに表示されます。
+                  タスクAとタスクBの所要時間の入力が完了すると、カレンダーの午前9時に表示されます。<br />
                 </p>
                 <p>
-                  タスクAとタスクBを終わらせてタスクCに着手できる時刻について考えます。
+                  タスクA、タスクBの順にスケジューリングしてください。<br />
+                  ただし、タスクAは午前9時から開始するものとします。<br />
                 </p>
                 <p>
-                  タスクCに着手できる時刻にあらかじめ18時に登録されているタスクCの予定を移動させてください。
+                  次に、タスクAとタスクBを終わらせてタスクCに着手できる時刻について考えます。<br />
+                  タスクCに着手できる時刻にあらかじめ18時に登録されているタスクCの予定を移動させてください。<br />
                   完了したら「次へ」をクリックしてください。
                 </p>
               </v-col>
@@ -99,7 +101,7 @@
           <v-col>
             <v-btn
               :disabled="!taskA || !taskB || !eventA || !eventB"
-              @click="$router.push('/experiment/visualization')"
+              @click="next"
               >次へ</v-btn
             >
           </v-col>
@@ -155,13 +157,31 @@ export default Vue.extend({
     },
   },
   methods: {
+    next() {
+      this.$accessor.log.addLog({
+        event: "end normal",
+        timestamp: new Date(),
+      });
+
+      this.$router.push("/experiment/visualization");
+    },
     estimateTask(taskId: number) {
       this.taskId = taskId;
       this.estimateForm = true;
+
+      this.$accessor.log.addLog({
+        event: `start estimating task ${taskId}`,
+        timestamp: new Date(),
+      });
     },
     addEvent(eventId: number) {
       this.eventId = eventId;
       this.eventForm = true;
+
+      this.$accessor.log.addLog({
+        event: `start adding event ${eventId}`,
+        timestamp: new Date(),
+      });
     },
   },
 });
