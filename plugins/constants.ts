@@ -23,7 +23,7 @@ const TASK = {
 const TASK_A: Task = {
   ...TASK,
   type: "task",
-  name: "[タスク A] レポート課題の作成",
+  name: "[タスクA] レポート課題の作成",
   id: 1,
   color: "blue",
   subTasks: [
@@ -76,7 +76,7 @@ const TASK_A: Task = {
 const TASK_B: Task = {
   ...TASK,
   type: "task",
-  name: "[タスク B] プレゼン資料の作成",
+  name: "[タスクB] プレゼン資料の作成",
   id: 2,
   color: "indigo",
   subTasks: [
