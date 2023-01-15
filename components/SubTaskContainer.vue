@@ -2,7 +2,13 @@
   <v-container>
     <v-row>
       <v-col>
-        <div class="text-h5">1. タスクをステップに分解する</div>
+        <div class="text-h5">1. タスクをサブタスクに分解する</div>
+        <p>
+          まず、タスクをサブタスクに分解します。タスクをサブタスクに分解することで、タスクの所要時間を見積もりやすくなります。
+        </p>
+        <p v-if="!readOnly">
+          ここではあらかじめ入力されたそれぞれサブタスクについて、所要時間の範囲を入力してください。
+        </p>
       </v-col>
     </v-row>
     <v-row
@@ -30,7 +36,8 @@
               min="0"
               :max="subTask.range[1]"
               type="number"
-              hide-details
+              label="最短"
+              hint="0以上の整数を入力"
               :readonly="readOnly"
             ></v-text-field>
           </v-col>
@@ -42,8 +49,9 @@
               v-model.number="subTask.range[1]"
               min="0"
               max="200"
+              label="最長"
+              hint="最短時間以上の整数を入力"
               type="number"
-              hide-details
               :readonly="readOnly"
               @blur="updatedRangeUpper(index)"
             ></v-text-field>

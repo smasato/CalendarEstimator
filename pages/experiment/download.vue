@@ -6,6 +6,7 @@
         <v-row>
           <v-col>Task: {{ $accessor.task.tasks.length }}</v-col>
           <v-col>Events: {{ $accessor.event.events.length }}</v-col>
+          <v-col>Logs: {{ $accessor.log.logs.length }}</v-col>
         </v-row>
         <v-row>
           <v-col>
@@ -76,6 +77,8 @@ export default Vue.extend({
     download() {
       const events = this.$accessor.event.events;
       const tasks = this.$accessor.task.tasks;
+      const logs = this.$accessor.log.logs;
+
       if (events.length === 0 || tasks.length === 0) {
         return;
       }
@@ -87,6 +90,7 @@ export default Vue.extend({
         experiment: this.experiment,
         events,
         tasks,
+        logs,
       };
       const blob = new Blob([JSON.stringify(data)], {
         type: "application/json",
@@ -109,8 +113,8 @@ export default Vue.extend({
         name: "",
         date: dayjs().startOf("day").format("YYYY-MM-DD"),
       };
-      this.$accessor.event.resetEvents();
-      this.$accessor.task.resetTasks();
+
+      this.$accessor.resetState();
 
       this.$router.push("/experiment/start");
     },

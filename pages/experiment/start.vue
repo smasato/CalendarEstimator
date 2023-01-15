@@ -5,12 +5,25 @@
       <v-container>
         <v-row>
           <v-col>
-            <h1>Start</h1>
+            <h1>実験開始</h1>
+            <p>このページでは、実験の説明を行います。</p>
           </v-col>
         </v-row>
         <v-row>
           <v-col>
-            <v-btn @click="start">Start</v-btn>
+            <p>
+              この実験では、通常のカレンダー表示・提案手法のカレンダー表示（予測的可視化）でのスケジューリングを行います。<br />
+              それぞれカレンダー表示でふたつのタスクをスケジューリングしてください。
+            </p>
+            <p>操作方法と表示内容については、それぞれのページで説明します。</p>
+            <p>
+              説明を読んだら、「次へ」をクリックして実験を開始してください。
+            </p>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-btn @click="start">次へ</v-btn>
           </v-col>
         </v-row>
       </v-container>
@@ -34,8 +47,7 @@ export default Vue.extend({
   },
   methods: {
     start() {
-      this.$accessor.task.resetTasks();
-      this.$accessor.event.resetEvents();
+      this.$accessor.resetState();
 
       const start = dayjs(
         `${this.$constants.DEFAULT_DATE} 18:00`,
@@ -62,6 +74,11 @@ export default Vue.extend({
         surprises: [],
       };
       this.$accessor.task.addTask(taskC);
+
+      this.$accessor.log.addLog({
+        event: "start experiment",
+        timestamp: new Date(),
+      });
 
       this.$router.push("/experiment/normal");
     },

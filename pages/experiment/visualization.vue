@@ -17,20 +17,22 @@
               <v-col>
                 <h2>スケジューリング</h2>
                 <p>
-                  さきほど入力した所要時間見積もりにもとづいて以下のカレンダーに表示されています。
+                  前のページで入力した所要時間見積もりにもとづいて、タスクAとタスクBがカレンダーの午前9時に表示されています。<br />
                   このカレンダー表示では、青色が濃いほどその時刻にタスクが継続している確率が高いことを示しています。
                 </p>
                 <p>
-                  タスクAとタスクBを終わらせてタスクCに着手できる時刻について考えます。
+                  タスクA、タスクBの順にスケジューリングしてください。<br />
+                  ただし、タスクAは午前9時から開始するものとします。
                 </p>
                 <p>
-                  タスクCに着手できる時刻にあらかじめ18時に登録されているタスクCの予定を移動させてください。
+                  次にタスクAとタスクBを終わらせてタスクCに着手できる時刻について考えます。<br />
+                  タスクCに着手できる時刻にあらかじめ18時に登録されているタスクCの予定を移動させてください。<br />
                   完了したら「次へ」をクリックしてください。
                 </p>
               </v-col>
             </v-row>
             <v-row>
-              <v-col>
+              <v-col cols="3">
                 <TaskCalendar style="height: 600px; overflow-y: scroll" />
               </v-col>
             </v-row>
@@ -38,7 +40,7 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-btn @click="$router.push('/experiment/end')">次へ</v-btn>
+            <v-btn @click="next">次へ</v-btn>
           </v-col>
         </v-row>
       </v-container>
@@ -59,6 +61,16 @@ export default Vue.extend({
     return {
       title: "Experiment (Visualization)",
     };
+  },
+  methods: {
+    next() {
+      this.$accessor.log.addLog({
+        event: "end experiment",
+        timestamp: new Date(),
+      });
+
+      this.$router.push("/experiment/end");
+    },
   },
 });
 </script>

@@ -3,30 +3,42 @@
     <v-card>
       <v-container>
         <v-row>
+          <v-col cols="12">
+            <p>次のタスクについての所要時間を見積もります。</p>
+          </v-col>
+        </v-row>
+        <v-row>
           <v-col>
             <v-text-field
               v-model="task.name"
               hide-details
-              label="Name"
+              label="タスク名"
               disabled
             ></v-text-field>
           </v-col>
         </v-row>
         <v-row>
-          <SubTaskContainer
-            :sub-tasks="task.subTasks"
-            @update:subTasks="task.subTasks = $event"
-          />
-        </v-row>
-        <v-row>
-          <SurprisesContainer
-            :surprises="task.surprises"
-            @update:surprises="task.surprises = $event"
-          />
+          <v-col>
+            <SubTaskContainer
+              :sub-tasks="task.subTasks"
+              @update:subTasks="task.subTasks = $event"
+            />
+          </v-col>
         </v-row>
         <v-row>
           <v-col>
-            <v-btn @click="addTask">OK</v-btn>
+            <SurprisesContainer
+              :surprises="task.surprises"
+              @update:surprises="task.surprises = $event"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12">
+            <p>すべての入力が完了したら、「完了」ボタンを押してください。</p>
+          </v-col>
+          <v-col>
+            <v-btn @click="addTask">完了</v-btn>
           </v-col>
         </v-row>
       </v-container>
@@ -101,6 +113,11 @@ export default Vue.extend({
       if (this.task.surprises.some((s) => s.probability[1] === 0)) {
         return;
       }
+
+      this.$accessor.log.addLog({
+        event: `end estimating task ${this.taskId}`,
+        timestamp: new Date(),
+      });
 
       const task = this.task;
       const estimate = this.$estimate.estimate(task);

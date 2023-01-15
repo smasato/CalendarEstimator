@@ -17,7 +17,6 @@ const TASK = {
   start: null,
   end: null,
   timed: true,
-  fixed: false,
 };
 
 const TASK_A: Task = {
@@ -26,6 +25,7 @@ const TASK_A: Task = {
   name: "[タスクA] レポート課題の作成",
   id: 1,
   color: "blue",
+  fixed: true,
   subTasks: [
     {
       name: "テーマについての調査",
@@ -79,6 +79,7 @@ const TASK_B: Task = {
   name: "[タスクB] プレゼン資料の作成",
   id: 2,
   color: "indigo",
+  fixed: false,
   subTasks: [
     {
       name: "テーマについての調査",
