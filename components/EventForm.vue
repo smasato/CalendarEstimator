@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="70%" @click:outside="onClickOutside">
+  <v-dialog v-model="dialog" width="70%" :persistent="true">
     <v-card>
       <v-container v-if="task">
         <v-row>
@@ -32,12 +32,7 @@
                   label="タスク名"
                 ></v-text-field>
                 <v-text-field
-                  v-model="event.start"
-                  type="time"
-                  label="開始時刻"
-                />
-                <v-text-field
-                  v-model="event.duration"
+                  v-model.number="event.duration"
                   dense
                   label="所要時間"
                   type="number"
@@ -72,7 +67,7 @@ export default Vue.extend({
   },
   props: {
     value: Boolean,
-    eventId: String,
+    eventId: Number,
   },
   data() {
     return {
@@ -81,7 +76,6 @@ export default Vue.extend({
       task: null as Task | null,
       event: {
         name: "",
-        start: "00:00",
         duration: 1,
       },
       rules: {
@@ -96,7 +90,7 @@ export default Vue.extend({
         this.dialog = value;
         if (this.eventId) {
           const task = this.$accessor.task.tasks.find(
-            (task) => task.name === `Task ${this.eventId}`
+            (task) => task.id === this.eventId
           );
           if (task) {
             this.task = task;
@@ -112,7 +106,7 @@ export default Vue.extend({
       form.validate();
 
       const start = dayjs(
-        `${this.$constants.DEFAULT_DATE} ${this.event.start}`,
+        `${this.$constants.DEFAULT_DATE} 09:00`,
         "YYYY-MM-DD HH:mm"
       );
       const end = start.add(this.event.duration, "minute");
@@ -139,15 +133,10 @@ export default Vue.extend({
     },
     resetEvent() {
       this.event.name = "";
-      this.event.start = "00:00";
       this.event.duration = 1;
 
       const form = this.$refs.form as VForm;
       form.resetValidation();
-    },
-    onClickOutside() {
-      this.resetEvent();
-      this.$emit("close-event-form");
     },
   },
 });

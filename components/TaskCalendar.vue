@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid style="height: 89vh">
-    <v-sheet width="50%" height="100%" class="overflow-y-auto">
+  <v-container fluid>
+    <v-sheet>
       <component
         :is="eventTypeComponent"
         ref="calendar"

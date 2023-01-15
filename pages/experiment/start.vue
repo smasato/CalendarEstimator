@@ -38,13 +38,13 @@ export default Vue.extend({
       this.$accessor.event.resetEvents();
 
       const start = dayjs(
-        this.$constants.DEFAULT_DATE + " 18:00",
+        `${this.$constants.DEFAULT_DATE} 18:00`,
         "YYYY-MM-DD HH:mm"
       ).toDate();
       const end = dayjs(start).add(30, "minutes").toDate();
 
       const eventC: Event = {
-        name: "Task C",
+        name: "タスクC",
         start,
         end,
         id: 0,
@@ -56,16 +56,10 @@ export default Vue.extend({
       this.$accessor.event.addEvent(eventC);
 
       const taskC: Task = {
-        name: "Task C",
-        start,
-        end,
+        ...eventC,
         id: 0,
-        timed: true,
-        fixed: false,
         subTasks: [],
         surprises: [],
-        color: "green",
-        type: "normal",
       };
       this.$accessor.task.addTask(taskC);
 

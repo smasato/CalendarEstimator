@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="70%" @click:outside="onClickOutside">
+  <v-dialog v-model="dialog" max-width="70%" :persistent="true">
     <v-card>
       <v-container>
         <v-row>
@@ -13,10 +13,16 @@
           </v-col>
         </v-row>
         <v-row>
-          <SubTaskContainer :sub-tasks="task.subTasks" />
+          <SubTaskContainer
+            :sub-tasks="task.subTasks"
+            @update:subTasks="task.subTasks = $event"
+          />
         </v-row>
         <v-row>
-          <SurprisesContainer :surprises="task.surprises" />
+          <SurprisesContainer
+            :surprises="task.surprises"
+            @update:surprises="task.surprises = $event"
+          />
         </v-row>
         <v-row>
           <v-col>
@@ -43,9 +49,9 @@ export default Vue.extend({
   props: {
     value: Boolean,
     taskId: {
-      type: String,
+      type: Number,
       required: false,
-      default: "",
+      default: -1,
     },
   },
   data() {
@@ -79,10 +85,10 @@ export default Vue.extend({
       handler(value) {
         this.dialog = value;
         switch (this.taskId) {
-          case "A":
+          case 1:
             this.setTask("A");
             break;
-          case "B":
+          case 2:
             this.setTask("B");
             break;
         }
@@ -91,11 +97,16 @@ export default Vue.extend({
   },
   methods: {
     addTask() {
+      // return if the task is not valid
+      if (this.task.surprises.some((s) => s.probability[1] === 0)) {
+        return;
+      }
+
       const task = this.task;
       const estimate = this.$estimate.estimate(task);
 
       const start = dayjs(
-        this.$constants.DEFAULT_DATE + " 9:00",
+        this.$constants.DEFAULT_DATE + " 09:00",
         "YYYY-MM-DD HH:mm"
       );
       const end = dayjs(start).add(estimate.max, "minute");
@@ -152,10 +163,6 @@ export default Vue.extend({
           this.task = JSON.parse(JSON.stringify(this.$constants.TASK_B));
           break;
       }
-    },
-    onClickOutside() {
-      this.resetTask();
-      this.$emit("close-dialog");
     },
   },
 });
