@@ -23,6 +23,8 @@ const TASK_A: Task = {
   ...TASK,
   type: "task",
   name: "[タスクA] レポート課題の作成",
+  explanation:
+    "このレポート課題は、心理学の授業のレポート課題です。テーマは「心理学の研究手法」です。文字数はA4紙の1ページ分です。",
   id: 1,
   color: "blue",
   fixed: true,
@@ -50,7 +52,7 @@ const TASK_A: Task = {
   ],
   surprises: [
     {
-      name: "パソコンの故障",
+      name: "パソコンが故障する",
       range: [1, 1],
       unit: "minute(s)",
       eventType: "slower",
@@ -64,7 +66,7 @@ const TASK_A: Task = {
       probability: [0, 1],
     },
     {
-      name: "ネットワークの障害",
+      name: "ネットワークの障害が起きる",
       range: [1, 1],
       unit: "minute(s)",
       eventType: "slower",
@@ -77,6 +79,8 @@ const TASK_B: Task = {
   ...TASK,
   type: "task",
   name: "[タスクB] プレゼン資料の作成",
+  explanation:
+    "このプレゼン資料は、英語の授業のためのプレゼン資料です。テーマは「日本の文化」です。発表時間は10分です。",
   id: 2,
   color: "indigo",
   fixed: false,
@@ -109,28 +113,28 @@ const TASK_B: Task = {
   ],
   surprises: [
     {
-      name: "パソコンの故障",
+      name: "パソコンが故障する",
       range: [1, 1],
       unit: "minute(s)",
       eventType: "slower",
       probability: [0, 1],
     },
     {
-      name: "プレゼンのテーマが変更された",
+      name: "発表時間を勘違いしていたので資料の大幅な修正が必要になる",
       range: [1, 1],
       unit: "minute(s)",
       eventType: "slower",
       probability: [0, 1],
     },
     {
-      name: "ネットワークの障害",
+      name: "ネットワークの障害が起きる",
       range: [1, 1],
       unit: "minute(s)",
       eventType: "slower",
       probability: [0, 1],
     },
     {
-      name: "資料の作成に必要な情報がすぐに手に入った",
+      name: "資料の作成に必要な情報がすぐに手に入る",
       range: [1, 1],
       unit: "minute(s)",
       eventType: "faster",

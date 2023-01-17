@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-sheet>
+    <v-sheet height="600">
       <component
         :is="eventTypeComponent"
         ref="calendar"
@@ -89,6 +89,8 @@ export default Vue.extend({
   mounted() {
     this.value = this.$constants.DEFAULT_DATE;
     this.fetchEvents();
+    const calendar = this.$refs.calendar as any;
+    calendar.scrollToTime("08:00");
 
     this.$store.subscribe((mutation, state) => {
       if (

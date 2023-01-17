@@ -69,6 +69,7 @@ export default Vue.extend({
 
       const taskC: Task = {
         ...eventC,
+        explanation: "",
         id: 0,
         subTasks: [],
         surprises: [],
