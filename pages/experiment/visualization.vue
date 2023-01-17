@@ -33,7 +33,7 @@
             </v-row>
             <v-row>
               <v-col cols="3">
-                <TaskCalendar style="height: 600px; overflow-y: scroll" />
+                <TaskCalendar />
               </v-col>
             </v-row>
           </v-container>

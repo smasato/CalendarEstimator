@@ -25,6 +25,7 @@ export type SubTask = {
 
 export type Task = Event & {
   name: string;
+  explanation: string;
   subTasks: Array<SubTask>;
   surprises: Array<Surprise>;
 };

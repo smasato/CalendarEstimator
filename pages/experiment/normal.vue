@@ -92,7 +92,7 @@
             </v-row>
             <v-row>
               <v-col cols="3">
-                <EventCalendar style="height: 600px; overflow-y: scroll" />
+                <EventCalendar />
               </v-col>
             </v-row>
           </v-container>

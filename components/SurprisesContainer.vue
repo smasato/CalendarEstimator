@@ -34,7 +34,7 @@
 
           <v-col cols="4">
             <v-row align="baseline">
-              <v-col cols="5">
+              <v-col cols="4">
                 <v-text-field
                   v-model.number="surprise.range[0]"
                   dense
@@ -46,10 +46,10 @@
                   :readonly="readOnly"
                 ></v-text-field>
               </v-col>
-              <v-col cols="2">
+              <v-col cols="auto">
                 <p>から</p>
               </v-col>
-              <v-col cols="5">
+              <v-col cols="4">
                 <v-text-field
                   v-model.number="surprise.range[1]"
                   dense

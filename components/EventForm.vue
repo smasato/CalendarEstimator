@@ -8,39 +8,6 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col>
-            <v-container>
-              <v-row>
-                <v-col>
-                  <v-text-field
-                    v-model="task.name"
-                    hide-details
-                    label="タスク名"
-                    disabled
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <SubTaskContainer
-                  :sub-tasks="task.subTasks"
-                  :read-only="true"
-                />
-              </v-row>
-              <v-row>
-                <SurprisesContainer
-                  :surprises="task.surprises"
-                  :read-only="true"
-                />
-              </v-row>
-            </v-container>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12">
-            <p>入力をもとに所要時間を入力してください。</p>
-          </v-col>
-        </v-row>
-        <v-row>
           <v-col cols="4">
             <v-container>
               <VForm ref="form" v-model="valid" lazy-validation>
@@ -63,6 +30,50 @@
                   >OK</v-btn
                 >
               </VForm>
+            </v-container>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <p>
+              以下にさきほどの入力が表示されています。これをもとに所要時間を入力してください。
+            </p>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-container>
+              <v-row>
+                <v-col>
+                  <v-text-field
+                    v-model="task.name"
+                    hide-details
+                    label="タスク名"
+                    disabled
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <p>{{ task.explanation }}</p>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <SubTaskContainer
+                    :sub-tasks="task.subTasks"
+                    :read-only="true"
+                  />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <SurprisesContainer
+                    :surprises="task.surprises"
+                    :read-only="true"
+                  />
+                </v-col>
+              </v-row>
             </v-container>
           </v-col>
         </v-row>

@@ -19,6 +19,11 @@
         </v-row>
         <v-row>
           <v-col>
+            <p>{{ task.explanation }}</p>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
             <SubTaskContainer
               :sub-tasks="task.subTasks"
               @update:subTasks="task.subTasks = $event"
