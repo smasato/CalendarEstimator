@@ -189,12 +189,10 @@ export default Vue.extend({
       const tasks: Task[] = [];
 
       const startDay = dayjs(this.value).startOf("day");
-      const endDay = dayjs(this.value).endOf("day");
 
       this.$accessor.task.tasks.forEach((task) => {
         const eventStart = dayjs(task.start);
-        const eventEnd = dayjs(task.end);
-        if (eventStart >= startDay && eventEnd <= endDay) {
+        if (eventStart >= startDay) {
           const newTask: Task = {
             ...task,
           };

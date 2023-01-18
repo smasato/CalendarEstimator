@@ -156,12 +156,10 @@ export default Vue.extend({
     fetchEvents() {
       const events = [] as Event[];
       const startDay = dayjs(this.value).startOf("day");
-      const endDay = dayjs(this.value).endOf("day");
 
       this.$accessor.event.events.forEach((event) => {
         const eventStart = dayjs(event.start);
-        const eventEnd = dayjs(event.end);
-        if (eventStart >= startDay && eventEnd <= endDay) {
+        if (eventStart >= startDay) {
           const newEvent: Event = {
             ...event,
           };
