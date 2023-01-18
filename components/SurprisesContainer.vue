@@ -23,7 +23,7 @@
             <span>{{ index + 1 }}.</span>
           </v-col>
 
-          <v-col cols="4">
+          <v-col cols="8">
             <v-text-field
               v-model="surprise.name"
               label="サプライズイベント名"
@@ -31,10 +31,13 @@
               hide-details
             ></v-text-field>
           </v-col>
+          <v-spacer></v-spacer>
+        </v-row>
 
-          <v-col cols="4">
+        <v-row align="baseline" class="mt-n4">
+          <v-col cols="8">
             <v-row align="baseline">
-              <v-col cols="4">
+              <v-col cols="2">
                 <v-text-field
                   v-model.number="surprise.range[0]"
                   dense
@@ -49,7 +52,7 @@
               <v-col cols="auto">
                 <p>から</p>
               </v-col>
-              <v-col cols="4">
+              <v-col cols="2">
                 <v-text-field
                   v-model.number="surprise.range[1]"
                   dense
@@ -62,26 +65,25 @@
                   @blur="updatedRangeUpper(index)"
                 ></v-text-field>
               </v-col>
+              <v-col cols="2">
+                <v-select
+                  v-model="surprise.unit"
+                  hide-details
+                  disabled
+                  :items="units"
+                ></v-select>
+              </v-col>
+              <v-col cols="3">
+                <v-select
+                  v-model="surprise.eventType"
+                  hide-details
+                  disabled
+                  :items="eventTypes"
+                ></v-select
+              ></v-col>
             </v-row>
           </v-col>
-          <v-col cols="1">
-            <v-select
-              v-model="surprise.unit"
-              hide-details
-              disabled
-              :items="units"
-            ></v-select>
-          </v-col>
-          <v-col cols="2">
-            <v-select
-              v-model="surprise.eventType"
-              hide-details
-              disabled
-              :items="eventTypes"
-            ></v-select
-          ></v-col>
-        </v-row>
-        <v-row align="baseline" class="mt-n4">
+
           <v-col cols="1">
             <v-text-field
               v-model.number="surprise.probability[1]"
@@ -115,7 +117,6 @@
           <v-col cols="auto">
             <span>起こる</span>
           </v-col>
-          <v-spacer></v-spacer>
         </v-row>
       </v-col>
     </v-row>
