@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-sheet height="600">
+    <v-sheet>
       <component
         :is="eventTypeComponent"
         ref="calendar"
@@ -54,7 +54,13 @@ export default Vue.extend({
   components: {
     CalendarEventGradation,
   },
-
+  props: {
+    participant: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+  },
   data: (): DataType => {
     return {
       value: "",
@@ -190,15 +196,24 @@ export default Vue.extend({
 
       const startDay = dayjs(this.value).startOf("day");
 
-      this.$accessor.task.tasks.forEach((task) => {
-        const eventStart = dayjs(task.start);
-        if (eventStart >= startDay) {
-          const newTask: Task = {
+      if (this.participant) {
+        this.participant.tasks.forEach((task) => {
+          tasks.push({
             ...task,
-          };
-          tasks.push(newTask);
-        }
-      });
+          });
+        });
+      } else {
+        this.$accessor.task.tasks.forEach((task) => {
+          const eventStart = dayjs(task.start);
+          if (eventStart >= startDay) {
+            const newTask: Task = {
+              ...task,
+            };
+            tasks.push(newTask);
+          }
+        });
+      }
+
       this.tasks = tasks;
       this.updateEvents();
     },
