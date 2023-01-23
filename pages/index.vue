@@ -7,8 +7,19 @@
         <v-row>
           <v-container>
             <v-row>
+              <v-col v-if="participants[0]">
+                {{ participants[0].experiment.id }}
+              </v-col>
+            </v-row>
+            <v-row>
               <v-col cols="3">
                 <TaskCalendar
+                  :participant="participants[0]"
+                  style="height: 4608px"
+                />
+              </v-col>
+              <v-col cols="3">
+                <EventCalendar
                   :participant="participants[0]"
                   style="height: 4608px"
                 />
