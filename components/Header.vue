@@ -1,6 +1,8 @@
 <template>
   <v-app-bar app>
-    <v-toolbar-title>Calendar Estimator</v-toolbar-title>
+    <v-toolbar-title @click="$router.push('/')"
+      >Calendar Estimator</v-toolbar-title
+    >
     <v-spacer></v-spacer>
     <div v-if="$accessor.debug.isDebug">
       <v-btn depressed @click="$router.push('/tasks')">Tasks</v-btn>

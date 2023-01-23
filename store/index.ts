@@ -4,6 +4,7 @@ import * as task from "@/store/task";
 import * as event from "@/store/event";
 import * as debug from "@/store/debug";
 import * as log from "@/store/log";
+import * as participants from "@/store/participants";
 
 export const state = () => ({});
 export const getters = {};
@@ -29,5 +30,6 @@ export const accessorType = getAccessorType({
     task,
     event,
     log,
+    participants,
   },
 });
