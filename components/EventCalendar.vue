@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-sheet height="600">
+    <v-sheet>
       <v-calendar
         ref="calendar"
         v-model="value"
@@ -46,6 +46,13 @@ export type DataType = {
 
 export default Vue.extend({
   components: { CalendarEventNormal },
+  props: {
+    participant: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+  },
   data: (): DataType => {
     return {
       value: "",
@@ -157,15 +164,23 @@ export default Vue.extend({
       const events = [] as Event[];
       const startDay = dayjs(this.value).startOf("day");
 
-      this.$accessor.event.events.forEach((event) => {
-        const eventStart = dayjs(event.start);
-        if (eventStart >= startDay) {
-          const newEvent: Event = {
+      if (this.participant) {
+        this.participant.events.forEach((event) => {
+          events.push({
             ...event,
-          };
-          events.push(newEvent);
-        }
-      });
+          });
+        });
+      } else {
+        this.$accessor.event.events.forEach((event) => {
+          const eventStart = dayjs(event.start);
+          if (eventStart >= startDay) {
+            const newEvent: Event = {
+              ...event,
+            };
+            events.push(newEvent);
+          }
+        });
+      }
       this.events = events;
     },
   },
